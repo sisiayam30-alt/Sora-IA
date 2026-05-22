@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Application Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">AppPlatform</div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#downloads">Downloads</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Discover & Download Premium Applications</h1>
+            <p>Access secure, fast, and verified application packages directly from our secure cloud infrastructure.</p>
+            <a href="#downloads" class="btn-primary">Browse Files</a>
+        </section>
+
+        <section id="downloads" class="cards-section">
+            <h2>Latest Packages</h2>
+            <div class="grid" id="app-container">
+                <!-- Data will be dynamically injected by JavaScript -->
+                <div class="loading">Loading assets...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 AppPlatform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
