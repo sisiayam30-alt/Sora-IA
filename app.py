@@ -47,8 +47,12 @@ HTML_CONTENT = """
                     <option value="EUR/GBP (OTC)">EUR/GBP (OTC)</option>
                     <option value="EUR/JPY (OTC)">EUR/JPY (OTC)</option>
                     <option value="GBP/JPY (OTC)">GBP/JPY (OTC)</option>
+                    <option value="CHF/JPY (OTC)">CHF/JPY (OTC)</option>
+                    <option value="CAD/JPY (OTC)">CAD/JPY (OTC)</option>
+                    <option value="EUR/CAD (OTC)">EUR/CAD (OTC)</option>
+                    <option value="AUD/JPY (OTC)">AUD/JPY (OTC)</option>
                 </optgroup>
-                <optgroup label="Forex Real-Time">
+                <optgroup label="Forex Real-Time (Global)">
                     <option value="EUR/USD">EUR/USD (Real)</option>
                     <option value="GBP/USD">GBP/USD (Real)</option>
                     <option value="USD/JPY">USD/JPY (Real)</option>
@@ -59,6 +63,8 @@ HTML_CONTENT = """
                     <option value="EUR/GBP">EUR/GBP (Real)</option>
                     <option value="EUR/JPY">EUR/JPY (Real)</option>
                     <option value="GBP/JPY">GBP/JPY (Real)</option>
+                    <option value="EUR/AUD">EUR/AUD (Real)</option>
+                    <option value="AUD/CAD">AUD/CAD (Real)</option>
                 </optgroup>
             </select>
         </div>
@@ -92,11 +98,15 @@ HTML_CONTENT = """
             detailsDiv.innerHTML = "";
             
             try {
-                const response = await fetch('/api/analyze', {
+                const response = await fetch(window.location.origin + '/api/analyze', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/center+json', 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json' 
+                    },
                     body: JSON.stringify({ pair: pair, timeframe: timeframe })
                 });
+                
                 const data = await response.json();
                 if(data.status === "success") {
                     statusDiv.innerHTML = "&#9989; Analyse vita ho an'ny " + data.pair;
@@ -106,27 +116,28 @@ HTML_CONTENT = """
                     else if (timeframe === "2m") expirationText = "2 minitra";
                     else if (timeframe === "3m") expirationText = "3 minitra";
                     else if (timeframe === "5m") expirationText = "5 minitra";
+                    
                     if (data.signal === "BUY") {
-                        signalDiv.innerHTML = "&#9898; BUY (CALL)";
+                        signalDiv.innerHTML = "🟢 BUY (CALL)";
                         signalDiv.className = "signal buy-style";
-                        detailsDiv.innerHTML = "Ora nivoahany: " + data.time + "<br>&#9201; <b>Expiration: Afaka " + expirationText + "</b>";
+                        detailsDiv.innerHTML = "Ora nivoahany: " + data.time + "<br>⏱ <b>Expiration: Afaka " + expirationText + "</b>";
                     } else if (data.signal === "SELL") {
-                        signalDiv.innerHTML = "&#128308; SELL (PUT)";
+                        signalDiv.innerHTML = "🔴 SELL (PUT)";
                         signalDiv.className = "signal sell-style";
-                        detailsDiv.innerHTML = "Ora nivoahany: " + data.time + "<br>&#9201; <b>Expiration: Afaka " + expirationText + "</b>";
+                        detailsDiv.innerHTML = "Ora nivoahany: " + data.time + "<br>⏱ <b>Expiration: Afaka " + expirationText + "</b>";
                     } else {
-                        signalDiv.innerHTML = "&#128683; NO SIGNAL";
+                        signalDiv.innerHTML = "🚫 NO SIGNAL";
                         signalDiv.className = "signal neutral-style";
-                        statusDiv.innerHTML = "&#9888; Tsy misy tondro mazava";
+                        statusDiv.innerHTML = "⚠️ Tsy misy tondro mazava";
                         statusDiv.style.color = "#ffcc00";
                         detailsDiv.innerHTML = "Milamina ny tsena. Andramo indray mialoha ny labozia manaraka.";
                     }
                 } else {
-                    statusDiv.innerHTML = "&#10060; Nisy olana teo amin'ny kajy.";
+                    statusDiv.innerHTML = "❌ Nisy olana teo amin'ny kajy.";
                     statusDiv.style.color = "#ff3333";
                 }
             } catch (error) {
-                statusDiv.innerHTML = "&#10060; Diso ny fifandraisana amin'ny server.";
+                statusDiv.innerHTML = "❌ Diso ny fifandraisana amin'ny server.";
                 statusDiv.style.color = "#ff3333";
             }
         }
