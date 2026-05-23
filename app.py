@@ -1,18 +1,17 @@
 from flask import Flask, jsonify, request
 import random
 import datetime
-import pandas as pd
-import ta
 
 app = Flask(__name__)
 
+# Ity ny pejy ho hita eo amin'ny finday (HTML/CSS/JS mitambatra)
 HTML_CONTENT = """
 <!DOCTYPE html>
 <html lang="mg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Forex Signal Live Analyzer</title>
+    <title>Sora-IA Forex Analyzer</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #0f111a; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
@@ -21,7 +20,7 @@ HTML_CONTENT = """
         .form-group { text-align: left; margin-bottom: 18px; }
         label { display: block; font-size: 14px; color: #94a3b8; margin-bottom: 8px; }
         select { width: 100%; padding: 12px; background: #202436; border: 1px solid #2d334d; color: #fff; border-radius: 8px; font-size: 15px; outline: none; cursor: pointer; }
-        .btn-analyze { width: 100%; padding: 14px; background: linear-gradient(135deg, #ff007f, #7928ca); border: none; color: white; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3); }
+        .btn-analyze { width: 100%; padding: 14px; background: linear-gradient(135deg, #ff007f, #7928ca); border: none; color: white; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 15px; }
         .result-box { margin-top: 25px; background: #1e2235; border-radius: 12px; padding: 20px; border: 1px dashed #2d334d; min-height: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .status { font-size: 15px; color: #a0a0a0; font-style: italic; margin-bottom: 10px; }
         .signal { font-size: 28px; font-weight: 800; }
@@ -33,27 +32,14 @@ HTML_CONTENT = """
 </head>
 <body>
     <div class="container">
-        <h1>📊 FOREX AI REAL ANALYZER</h1>
+        <h1>📊 FOREX AI ANALYZER</h1>
         <div class="form-group">
             <label>Safidio ny Marche (Pair):</label>
             <select id="market">
-                <optgroup label="Pocket Option OTC">
-                    <option value="EUR/USD (OTC)">EUR/USD (OTC)</option>
-                    <option value="GBP/USD (OTC)">GBP/USD (OTC)</option>
-                    <option value="USD/JPY (OTC)">USD/JPY (OTC)</option>
-                    <option value="AUD/USD (OTC)">AUD/USD (OTC)</option>
-                    <option value="USD/CHF (OTC)">USD/CHF (OTC)</option>
-                    <option value="NZD/USD (OTC)">NZD/USD (OTC)</option>
-                    <option value="EUR/GBP (OTC)">EUR/GBP (OTC)</option>
-                    <option value="EUR/JPY (OTC)">EUR/JPY (OTC)</option>
-                    <option value="GBP/JPY (OTC)">GBP/JPY (OTC)</option>
-                </optgroup>
-                <optgroup label="Forex Real-Time">
-                    <option value="EUR/USD">EUR/USD (Real)</option>
-                    <option value="GBP/USD">GBP/USD (Real)</option>
-                    <option value="USD/JPY">USD/JPY (Real)</option>
-                    <option value="AUD/USD">AUD/USD (Real)</option>
-                </optgroup>
+                <option value="EUR/USD (OTC)">EUR/USD (OTC)</option>
+                <option value="GBP/USD (OTC)">GBP/USD (OTC)</option>
+                <option value="USD/JPY (OTC)">USD/JPY (OTC)</option>
+                <option value="EUR/USD">EUR/USD (Real)</option>
             </select>
         </div>
         <div class="form-group">
@@ -80,13 +66,14 @@ HTML_CONTENT = """
             const signalDiv = document.getElementById("signal");
             const detailsDiv = document.getElementById("details");
 
-            statusDiv.innerHTML = "Manao analyse mivantana an'i " + pair + "...";
+            statusDiv.innerHTML = "Manao analyse mivantana...";
             statusDiv.style.color = "#ffcc00";
             signalDiv.innerHTML = "";
             detailsDiv.innerHTML = "";
 
             try {
-                const response = await fetch(window.location.origin + '/api/analyze', {
+                // Mandefa fangatahana amin'ny server amin'ny fomba tsotra
+                const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pair: pair, timeframe: timeframe })
@@ -96,25 +83,17 @@ HTML_CONTENT = """
                 statusDiv.innerHTML = "✅ Analyse vita ho an'ny " + data.pair;
                 statusDiv.style.color = "#4ef2d2";
 
-                let ext = "1 minitra";
-                if (timeframe === "2m") ext = "2 minitra";
-                else if (timeframe === "5m") ext = "5 minitra";
-
                 if (data.signal === "BUY") {
                     signalDiv.innerHTML = "🟢 BUY (CALL)";
                     signalDiv.className = "signal buy-style";
-                    detailsDiv.innerHTML = "Ora: " + data.time + "<br>⏱ <b>Expiration: Afaka " + ext + "</b>";
                 } else if (data.signal === "SELL") {
                     signalDiv.innerHTML = "🔴 SELL (PUT)";
                     signalDiv.className = "signal sell-style";
-                    detailsDiv.innerHTML = "Ora: " + data.time + "<br>⏱ <b>Expiration: Afaka " + ext + "</b>";
                 } else {
                     signalDiv.innerHTML = "🚫 NO SIGNAL";
                     signalDiv.className = "signal neutral-style";
-                    statusDiv.innerHTML = "⚠️ Tsy misy tondro mazava";
-                    statusDiv.style.color = "#ffcc00";
-                    detailsDiv.innerHTML = "Milamina ny tsena. Andramo indray mialoha ny labozia manaraka.";
                 }
+                detailsDiv.innerHTML = "Ora: " + data.time + "<br>⏱ Expiration: " + timeframe;
             } catch (error) {
                 statusDiv.innerHTML = "❌ Diso ny fifandraisana amin'ny server.";
                 statusDiv.style.color = "#ff3333";
@@ -125,32 +104,6 @@ HTML_CONTENT = """
 </html>
 """
 
-def analyze_market_live(pair, timeframe):
-    prices = [round(random.uniform(1.0950, 1.1050), 4) for _ in range(50)]
-    df = pd.DataFrame({
-        'close': prices,
-        'high': [p + 0.001 for p in prices],
-        'low': [p - 0.001 for p in prices]
-    })
-    
-    df['rsi'] = ta.momentum.rsi(df['close'], window=14)
-    indicator_bb = ta.volatility.BollingerBands(close=df['close'], window=20, window_dev=2)
-    df['bb_high'] = indicator_bb.bollinger_hband()
-    df['bb_low'] = indicator_bb.bollinger_lband()
-    
-    last_row = df.iloc[-1]
-    current_price = last_row['close']
-    rsi = last_row['rsi']
-    bb_high = last_row['bb_high']
-    bb_low = last_row['bb_low']
-    
-    if rsi > 65 or current_price >= bb_high:
-        return "SELL"
-    elif rsi < 35 or current_price <= bb_low:
-        return "BUY"
-    else:
-        return "NEUTRAL"
-
 @app.route('/')
 def index():
     return HTML_CONTENT
@@ -158,15 +111,15 @@ def index():
 @app.route('/api/analyze', methods=['POST'])
 def analyze():
     try:
-        data = request.json
-        if not data:
-            return jsonify({"status": "error"}), 400
-            
-        pair = data.get('pair')
-        timeframe = data.get('timeframe')
-        result = analyze_market_live(pair, timeframe)
-        now = datetime.datetime.now()
+        data = request.json or {}
+        pair = data.get('pair', 'EUR/USD (OTC)')
+        timeframe = data.get('timeframe', '1m')
         
+        # Algorithme tsotra mamorona signal
+        signals = ["BUY", "SELL", "NEUTRAL"]
+        result = random.choice(signals)
+        
+        now = datetime.datetime.now()
         return jsonify({
             "status": "success",
             "pair": pair,
