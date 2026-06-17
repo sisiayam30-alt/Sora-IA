@@ -2,75 +2,39 @@ from flask import Flask, render_template, request, jsonify
 import yfinance as yf
 import pandas as pd
 
-app = Flask(__name__, template_folder=".")
-
-# Ticker mapping ho an'ny Forex Real
-ticker_map = {
-    "EUR/USD": "EURUSD=X", "GBP/USD": "GBPUSD=X", "USD/JPY": "JPY=X",
-    "AUD/USD": "AUDUSD=X", "USD/CHF": "CHF=X", "EUR/GBP": "EURGBP=X",
-    "GOLD": "GC=F", "SILVER": "SI=F", "CRUDE OIL": "CL=F"
-}
-
-def calculate_indicators(df):
-    # SMA 50 ho an'ny Trend matanjaka kokoa
-    df['SMA_50'] = df['Close'].rolling(window=50).mean()
-    
-    # RSI 14
-    delta = df['Close'].diff()
-    gain = delta.clip(lower=0).rolling(window=14).mean()
-    loss = -delta.clip(upper=0).rolling(window=14).mean()
-    rs = gain / loss
-    df['RSI'] = 100 - (100 / (1 + rs))
-    return df
+app = Flask(__name__)
 
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
-@app.route('/api/analyze', methods=['GET'])
+@app.route('/analyze')
 def analyze():
-    market = request.args.get('market', 'EUR/USD')
-    clean_market = market.replace(" (OTC)", "").replace(" (Real)", "")
-    ticker = ticker_map.get(clean_market, "EURUSD=X")
-    
+    symbol = request.args.get('symbol', 'EURUSD=X')
     try:
-        # Maka data 1 andro miaraka amin'ny 1 min interval
-        data = yf.download(tickers=ticker, period="1d", interval="1m", progress=False)
+        # Maka data 5 minitra
+        df = yf.download(symbol, period="1d", interval="5m", progress=False)
+        if len(df) < 20: return jsonify({"signal": "WAIT", "details": "Miandry data..."})
         
-        if data.empty or len(data) < 50:
-            return jsonify({"status": "error", "message": "Miandry data..."})
+        # Kajy RSI
+        delta = df['Close'].diff()
+        gain = delta.clip(lower=0).rolling(window=14).mean()
+        loss = -delta.clip(upper=0).rolling(window=14).mean()
+        rs = gain / loss
+        rsi = 100 - (100 / (1 + rs.iloc[-1]))
         
-        data = calculate_indicators(data)
-        last = data.iloc[-1]
+        # Kajy SMA
+        sma = df['Close'].rolling(window=20).mean().iloc[-1]
+        price = df['Close'].iloc[-1]
         
-        price = float(last['Close'])
-        rsi = float(last['RSI'])
-        sma = float(last['SMA_50'])
-        
-        # LOGIC: Signal "Strict" - Tsy miresaka raha tsy tena mifanaraka
         if rsi < 30 and price > sma:
-            signal = "🟢 HIGHER (CALL)"
-            style = "buy-style"
-            action = "Trend miakatra + Oversold (RSI)"
+            return jsonify({"signal": "🟢 CALL", "details": "RSI Oversold + Trend Miakatra"})
         elif rsi > 70 and price < sma:
-            signal = "🔴 LOWER (PUT)"
-            style = "sell-style"
-            action = "Trend midina + Overbought (RSI)"
+            return jsonify({"signal": "🔴 PUT", "details": "RSI Overbought + Trend Midina"})
         else:
-            signal = "🚫 NO SIGNAL"
-            style = "nosignal-style"
-            action = "Tsena tsy mbola azo antoka"
-            
-        return jsonify({
-            "status": "success",
-            "signal": signal,
-            "style": style,
-            "action": action,
-            "rsi": round(rsi, 2),
-            "price": round(price, 5)
-        })
+            return jsonify({"signal": "⚪ WAIT", "details": "Tsy mbola mety ny tsena"})
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)})
+        return jsonify({"signal": "ERROR", "details": str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True)
