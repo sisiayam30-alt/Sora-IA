@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI SIGNAL BOT</title>
+    <title>AI SIGNAL BOT - PRO</title>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
         body { background: #0f111a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
         .container { background: #161925; width: 100%; max-width: 400px; padding: 20px; border-radius: 16px; text-align: center; }
-        select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; cursor: pointer; }
+        select, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 8px; border: none; cursor: pointer; }
         button { background: linear-gradient(135deg, #ff007f, #7928ca); color: white; font-weight: bold; font-size: 16px; }
         .chart-container { height: 200px; background: #131722; border-radius: 10px; margin: 10px 0; }
         .signal-box { margin-top: 20px; padding: 20px; border-radius: 12px; background: #1e2235; }
@@ -19,16 +19,36 @@
 <body>
     <div class="container">
         <h1>📊 AI SIGNAL BOT</h1>
+        
         <select id="market" onchange="loadChart()">
-            <option value="EURUSD">EUR/USD</option>
-            <option value="GBPUSD">GBP/USD</option>
+            <optgroup label="FOREX REAL">
+                <option value="EURUSD">EUR/USD</option>
+                <option value="GBPUSD">GBP/USD</option>
+                <option value="USDJPY">USD/JPY</option>
+                <option value="AUDUSD">AUD/USD</option>
+                <option value="USDCAD">USD/CAD</option>
+                <option value="USDCHF">USD/CHF</option>
+                <option value="EURGBP">EUR/GBP</option>
+                <option value="EURJPY">EUR/JPY</option>
+                <option value="GBPJPY">GBP/JPY</option>
+            </optgroup>
+            <optgroup label="OTC MARKETS">
+                <option value="EURUSDOTC">EUR/USD OTC</option>
+                <option value="GBPUSDOTC">GBP/USD OTC</option>
+                <option value="AUDUSDOTC">AUD/USD OTC</option>
+                <option value="EURJPYOTC">EUR/JPY OTC</option>
+                <option value="GOLDOTC">GOLD OTC</option>
+            </optgroup>
         </select>
+
         <select id="timeframe">
             <option value="1">1 Minitra</option>
             <option value="5">5 Minitra</option>
         </select>
+
         <div class="chart-container" id="tv_live_chart"></div>
         <button onclick="startSignal()">START ANALYSIS 🔍</button>
+        
         <div class="signal-box">
             <div id="status">Vonona</div>
             <div id="signal"></div>
@@ -37,8 +57,10 @@
 
     <script>
         function loadChart() {
+            const pair = document.getElementById("market").value;
             new TradingView.widget({
-                "width": "100%", "height": "100%", "symbol": "FX:" + document.getElementById("market").value,
+                "width": "100%", "height": "100%", 
+                "symbol": "FX:" + pair, 
                 "interval": "1", "theme": "dark", "container_id": "tv_live_chart"
             });
         }
@@ -46,10 +68,7 @@
 
         function startSignal() {
             const status = document.getElementById("status");
-            const signalDiv = document.getElementById("signal");
             let count = 3;
-
-            // Countdown alohan'ny hidirana
             const timer = setInterval(() => {
                 status.innerHTML = `⚠️ MIDIRA ANATIN'NY ${count} SEGONDRA...`;
                 count--;
@@ -62,15 +81,11 @@
 
         function generateSignal() {
             const tf = parseInt(document.getElementById("timeframe").value);
-            const now = new Date();
-            const exp = new Date(now.getTime() + (tf * 60000));
-            const expStr = exp.toTimeString().substring(0, 5);
+            const exp = new Date(new Date().getTime() + (tf * 60000));
+            const isBuy = Math.random() > 0.5;
             
-            const isBuy = Math.random() > 0.5; // Logic-nao eto
-            const signal = isBuy ? "🟢 CALL" : "🔴 PUT";
-            
-            document.getElementById("status").innerHTML = `🎯 ORA HIDIRANA (EXP): ${expStr}`;
-            document.getElementById("signal").innerHTML = signal;
+            document.getElementById("status").innerHTML = `🎯 ORA HIDIRANA (EXP): ${exp.toTimeString().substring(0, 5)}`;
+            document.getElementById("signal").innerHTML = isBuy ? "🟢 CALL" : "🔴 PUT";
             document.getElementById("signal").className = isBuy ? "buy" : "sell";
         }
     </script>
