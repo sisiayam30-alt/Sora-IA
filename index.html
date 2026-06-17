@@ -2,44 +2,41 @@
 <html lang="mg">
 <head>
     <meta charset="UTF-8">
-    <title>AI Real Technical Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POCKET OPTION BOT</title>
     <style>
-        body { background: #0f111a; color: white; text-align: center; font-family: sans-serif; }
-        .buy-style { color: #00ff66; font-size: 30px; font-weight: bold; }
-        .sell-style { color: #ff3333; font-size: 30px; font-weight: bold; }
-        .nosignal-style { color: #8e9aa8; }
+        body { background: #0f111a; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        .card { background: #1c1f2e; padding: 20px; border-radius: 15px; margin-top: 20px; }
+        .buy-style { color: #00ff66; font-size: 24px; font-weight: bold; }
+        .sell-style { color: #ff3333; font-size: 24px; font-weight: bold; }
+        .neutral-style { color: #8e9aa8; }
+        button { background: linear-gradient(to right, #6a11cb, #2575fc); color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h1>📊 POCKET OPTION ANALYSER</h1>
-    
+    <h1>📊 POCKET OPTION PRO BOT</h1>
     <select id="market">
-        <option value="EUR/USD">EUR/USD</option>
-        <option value="GBP/USD">GBP/USD</option>
-        <option value="USD/JPY">USD/JPY</option>
-        <option value="GOLD">GOLD</option>
+        <option value="EUR/USD">EUR/USD (Real)</option>
+        <option value="GBP/USD">GBP/USD (Real)</option>
+        <option value="GOLD">GOLD (XAU/USD)</option>
     </select>
-
-    <select id="tf">
-        <option value="1m">1 Minitra</option>
-        <option value="5m">5 Minitra</option>
-    </select>
-
-    <button onclick="analyze()">START ANALYSE</button>
-
-    <div id="signal" style="margin-top: 20px;"></div>
-    <div id="details"></div>
+    
+    <div class="card">
+        <button onclick="startAnalysis()">START REAL ANALYSE 🔍</button>
+        <div id="result" style="margin-top: 20px;"></div>
+        <div id="rsi-val"></div>
+    </div>
 
     <script>
-    function analyze() {
+    function startAnalysis() {
         const m = document.getElementById("market").value;
-        const tf = document.getElementById("tf").value;
-        fetch(`/api/analyze?market=${m}&tf=${tf}`)
+        document.getElementById("result").innerHTML = "⏳ Analyse en cours...";
+        fetch(`/api/analyze?market=${m}`)
             .then(res => res.json())
             .then(data => {
-                document.getElementById("signal").innerHTML = data.signal;
-                document.getElementById("signal").className = data.style;
-                document.getElementById("details").innerHTML = `RSI: ${data.rsi}`;
+                document.getElementById("result").innerHTML = data.signal;
+                document.getElementById("result").className = data.style;
+                document.getElementById("rsi-val").innerHTML = `RSI: ${data.rsi}`;
             });
     }
     </script>
