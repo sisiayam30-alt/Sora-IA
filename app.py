@@ -1,53 +1,73 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify # Ovay ny 'render_request' ho 'request'
 import yfinance as yf
 import pandas as pd
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=".")
 
-# Ticker mapping ho an'ny data marina
-ticker_map = {
-    "EUR/USD": "EURUSD=X", "GBP/USD": "GBPUSD=X", "USD/JPY": "JPY=X",
-    "AUD/USD": "AUDUSD=X", "GOLD": "GC=F"
-}
-
-def get_real_data(ticker):
-    # Maka data 1 andro farany amin'ny 1 min interval
-    df = yf.download(ticker, period="1d", interval="1m", progress=False)
+def calculate_indicators(df):
+    # Kajy SMA 14
+    df['SMA'] = df['Close'].rolling(window=14).mean()
     
-    # Kajy Bollinger Bands
-    df['SMA'] = df['Close'].rolling(window=20).mean()
-    df['STD'] = df['Close'].rolling(window=20).std()
-    df['Upper'] = df['SMA'] + (df['STD'] * 2)
-    df['Lower'] = df['SMA'] - (df['STD'] * 2)
-    
-    # Kajy RSI
+    # Kajy RSI 14
     delta = df['Close'].diff()
     gain = delta.clip(lower=0).rolling(window=14).mean()
     loss = -delta.clip(upper=0).rolling(window=14).mean()
     rs = gain / loss
     df['RSI'] = 100 - (100 / (1 + rs))
-    
-    return df.iloc[-1]
+    return df
 
-@app.route('/api/analyze')
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/api/analyze', methods=['GET'])
 def analyze():
+    # Fanitsiana: 'render_request' dia tokony ho 'request'
     market = request.args.get('market', 'EUR/USD')
-    ticker = ticker_map.get(market, "EURUSD=X")
+    timeframe = request.args.get('timeframe', '1 MIN')
+    
+    clean_market = market.replace(" (OTC)", "").replace(" (Real)", "")
+    
+    ticker_map = {
+        "EUR/USD": "EURUSD=X", "GBP/USD": "GBPUSD=X", "USD/JPY": "JPY=X",
+        "AUD/USD": "AUDUSD=X", "USD/CHF": "CHF=X", "EUR/GBP": "EURGBP=X",
+        "GOLD": "GC=F", "SILVER": "SI=F", "CRUDE OIL": "CL=F"
+    }
+    
+    ticker = ticker_map.get(clean_market, "EURUSD=X")
     
     try:
-        data = get_real_data(ticker)
-        price = float(data['Close'])
-        rsi = float(data['RSI'])
+        data = yf.download(tickers=ticker, period="1d", interval="1m", progress=False)
+        if data.empty:
+            return jsonify({"status": "error", "message": "Tsy azo ny data"})
         
-        # LOGIC TENA IZY (Confluence)
-        if rsi < 30 and price <= data['Lower']:
-            return jsonify({"signal": "🟢 HIGHER (CALL)", "style": "buy-style", "rsi": round(rsi, 2)})
-        elif rsi > 70 and price >= data['Upper']:
-            return jsonify({"signal": "🔴 LOWER (PUT)", "style": "sell-style", "rsi": round(rsi, 2)})
+        data = calculate_indicators(data)
+        last_row = data.iloc[-1]
+        
+        # Fampitandremana: Ataovy antoka fa 'float' no ampiasaina
+        current_price = float(last_row['Close'])
+        rsi_value = float(last_row['RSI'])
+        sma_value = float(last_row['SMA'])
+        
+        if rsi_value < 35 and current_price > sma_value:
+            signal = "🟢 HIGHER (CALL)"
+            style = "buy-style"
+        elif rsi_value > 65 and current_price < sma_value:
+            signal = "🔴 LOWER (PUT)"
+            style = "sell-style"
         else:
-            return jsonify({"signal": "⚪ NEUTRAL (STANDBY)", "style": "neutral-style", "rsi": round(rsi, 2)})
+            signal = "🚫 NO SIGNAL"
+            style = "nosignal-style"
+            
+        return jsonify({
+            "status": "success",
+            "signal": signal,
+            "style": style,
+            "rsi": round(rsi_value, 2),
+            "price": round(current_price, 5)
+        })
     except Exception as e:
-        return jsonify({"signal": "Error", "message": str(e)})
+        return jsonify({"status": "error", "message": str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True)
