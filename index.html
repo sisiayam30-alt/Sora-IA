@@ -1,93 +1,23 @@
-<!DOCTYPE html>
-<html lang="mg">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sora-IA Pure Real Technical Analyzer</title>
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #0f111a; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .container { background: #161925; width: 100%; max-width: 480px; padding: 25px; border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); border: 1px solid #23283d; text-align: center; }
-        h1 { font-size: 22px; color: #4ef2d2; margin-bottom: 20px; font-weight: 700; }
-        .form-group { text-align: left; margin-bottom: 15px; }
-        label { display: block; font-size: 14px; color: #94a3b8; margin-bottom: 6px; }
-        select { width: 100%; padding: 12px; background: #202436; border: 1px solid #2d334d; color: #fff; border-radius: 8px; font-size: 15px; cursor: pointer; }
-        .chart-container { width: 100%; height: 240px; margin-top: 10px; border-radius: 10px; overflow: hidden; border: 1px solid #2d334d; background: #131722; }
-        .btn-analyze { width: 100%; padding: 14px; background: linear-gradient(135deg, #ff007f, #7928ca); border: none; color: white; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 15px; }
-        .result-box { margin-top: 20px; background: #1e2235; border-radius: 12px; padding: 20px; border: 1px dashed #2d334d; }
-        .signal { font-size: 26px; font-weight: 800; }
-        .buy-style { color: #00ff66; }
-        .sell-style { color: #ff3333; }
-        .details { margin-top: 10px; font-size: 13px; color: #ffffff; background: #252a3d; padding: 10px; border-radius: 8px; text-align: left; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>📊 FOREX AI REAL ANALYSER</h1>
-        <div class="form-group">
-            <label>Safidio ny Marche:</label>
-            <select id="market" onchange="changeMarket()">
-                <option value="EURUSD">EUR/USD (Real)</option>
-                <option value="GBPUSD">GBP/USD (Real)</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Timeframe / Expiration:</label>
-            <select id="timeframe" onchange="changeMarket()">
-                <option value="1">1 Minitra (M1)</option>
-                <option value="5">5 Minitra (M5)</option>
-            </select>
-        </div>
-        <div class="chart-container" id="tv_live_chart"></div>
-        <button class="btn-analyze" onclick="startPureAnalysis()">START REAL ANALYSE 🔍</button>
-        <div class="result-box">
-            <div id="status" class="status">Miandry analyse...</div>
-            <div id="signal" class="signal"></div>
-            <div id="details" class="details" style="display: none;"></div>
-        </div>
-    </div>
-
-    <script>
-        function loadChart(pair) {
-            new TradingView.widget({
-                "width": "100%", "height": "100%", "symbol": "FX:" + pair,
-                "interval": document.getElementById("timeframe").value,
-                "theme": "dark", "container_id": "tv_live_chart"
-            });
+// Ampio ity lojika ity ao amin'ny script anao
+function startPureAnalysis() {
+    const tfValue = parseInt(document.getElementById("timeframe").value);
+    const now = new Date();
+    
+    // 1. Manome signal 1 segondra vao tonga ny fotoana hidirana
+    // 2. Mampiasa "Countdown" mba hanomananao ny tananao
+    
+    let secondsLeft = 3; 
+    const statusDiv = document.getElementById("status");
+    
+    const timer = setInterval(() => {
+        statusDiv.innerHTML = `⚠️ MIDIRA ANATIN'NY ${secondsLeft} SEGONDRA...`;
+        secondsLeft--;
+        
+        if (secondsLeft < 0) {
+            clearInterval(timer);
+            // Eto no hivoaka ny Signal (CALL/PUT)
+            // Rehefa tonga eto, dia midika fa "Tonga ny fotoana hidirana"
+            performSignalGeneration(); 
         }
-        function changeMarket() { loadChart(document.getElementById("market").value); }
-        window.onload = function() { loadChart("EURUSD"); };
-
-        function startPureAnalysis() {
-            const tfValue = parseInt(document.getElementById("timeframe").value);
-            const statusDiv = document.getElementById("status");
-            const signalDiv = document.getElementById("signal");
-            const detailsDiv = document.getElementById("details");
-
-            statusDiv.innerHTML = "⏳ AI mandrefy...";
-            
-            setTimeout(() => {
-                const now = new Date();
-                // KAJY ORA HIDIRANA (Dynamic)
-                const expTime = new Date(now.getTime() + (tfValue * 60000));
-                const nowStr = now.toTimeString().substring(0, 5);
-                const expStr = expTime.toTimeString().substring(0, 5);
-
-                const rsiWeight = Math.floor(Math.random() * 100); 
-                detailsDiv.style.display = "block";
-
-                if (rsiWeight > 50) {
-                    signalDiv.innerHTML = "🟢 HIGHER (CALL)";
-                    signalDiv.className = "signal buy-style";
-                    detailsDiv.innerHTML = `ORA: <b>${nowStr}</b> | EXP: <b style="color:#00ff66">${expStr}</b><br>TREND: BULLISH`;
-                } else if (rsiWeight < 45) {
-                    signalDiv.innerHTML = "🔴 LOWER (PUT)";
-                    signalDiv.className = "signal sell-style";
-                    detailsDiv.innerHTML = `ORA: <b>${nowStr}</b> | EXP: <b style="color:#ff3333">${expStr}</b><br>TREND: BEARISH`;
-                }
-            }, 2000);
-        }
-    </script>
-</body>
-</html>
+    }, 1000);
+}
