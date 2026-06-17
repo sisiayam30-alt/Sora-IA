@@ -2,337 +2,46 @@
 <html lang="mg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sora-IA Pure Real Technical Analyzer</title>
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <title>AI Real Technical Analyzer</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #0f111a;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            background: #161925;
-            width: 100%;
-            max-width: 480px;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            border: 1px solid #23283d;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 22px;
-            color: #4ef2d2;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-
-        .form-group {
-            text-align: left;
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            color: #94a3b8;
-            margin-bottom: 6px;
-        }
-
-        select {
-            width: 100%;
-            padding: 12px;
-            background: #202436;
-            border: 1px solid #2d334d;
-            color: #fff;
-            border-radius: 8px;
-            font-size: 15px;
-            outline: none;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        select:focus {
-            border-color: #4ef2d2;
-        }
-
-        /* Faritra misy ny tabilao */
-        .chart-container {
-            width: 100%;
-            height: 240px;
-            margin-top: 10px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #2d334d;
-            background: #131722;
-        }
-
-        /* Widget fakan-data momba ny Analyse mivantana */
-        .ta-widget-container {
-            width: 100%;
-            height: 140px;
-            margin-top: 15px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #2d334d;
-            display: none; /* Afatratra any aoriana any ny kajy */
-        }
-
-        .btn-analyze {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #ff007f, #7928ca);
-            border: none;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);
-        }
-
-        .btn-analyze:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 0, 127, 0.5);
-        }
-
-        .result-box {
-            margin-top: 20px;
-            background: #1e2235;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px dashed #2d334d;
-            min-height: 140px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .status {
-            font-size: 14px;
-            color: #a0a0a0;
-            font-style: italic;
-            margin-bottom: 8px;
-        }
-
-        .signal {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .buy-style {
-            color: #00ff66;
-            text-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
-        }
-
-        .sell-style {
-            color: #ff3333;
-            text-shadow: 0 0 15px rgba(255, 51, 51, 0.4);
-        }
-
-        .nosignal-style {
-            color: #8e9aa8;
-        }
-
-        .details {
-            margin-top: 10px;
-            font-size: 13px;
-            color: #ffffff;
-            line-height: 1.6;
-            background: #252a3d;
-            padding: 10px 15px;
-            border-radius: 8px;
-            width: 100%;
-            text-align: left;
-        }
-        
-        .details b {
-            color: #4ef2d2;
-        }
+        body { background: #0f111a; color: white; text-align: center; font-family: sans-serif; }
+        .buy-style { color: #00ff66; font-size: 30px; font-weight: bold; }
+        .sell-style { color: #ff3333; font-size: 30px; font-weight: bold; }
+        .nosignal-style { color: #8e9aa8; }
     </style>
 </head>
 <body>
+    <h1>📊 POCKET OPTION ANALYSER</h1>
+    
+    <select id="market">
+        <option value="EUR/USD">EUR/USD</option>
+        <option value="GBP/USD">GBP/USD</option>
+        <option value="USD/JPY">USD/JPY</option>
+        <option value="GOLD">GOLD</option>
+    </select>
 
-    <div class="container">
-        <h1>📊 FOREX AI REAL ANALYSER</h1>
+    <select id="tf">
+        <option value="1m">1 Minitra</option>
+        <option value="5m">5 Minitra</option>
+    </select>
 
-        <div class="form-group">
-            <label for="market">Safidio ny Marche (Real Forex Market):</label>
-            <select id="market" onchange="changeMarket()">
-                <option value="EURUSD">EUR/USD (Real)</option>
-                <option value="GBPUSD">GBP/USD (Real)</option>
-                <option value="USDJPY">USD/JPY (Real)</option>
-                <option value="AUDUSD">AUD/USD (Real)</option>
-                <option value="USDCAD">USD/CAD (Real)</option>
-                <option value="USDCHF">USD/CHF (Real)</option>
-                <option value="EURGBP">EUR/GBP (Real)</option>
-                <option value="EURJPY">EUR/JPY (Real)</option>
-                <option value="GBPJPY">GBP/JPY (Real)</option>
-            </select>
-        </div>
+    <button onclick="analyze()">START ANALYSE</button>
 
-        <div class="form-group">
-            <label for="timeframe">Timeframe / Expiration:</label>
-            <select id="timeframe" onchange="changeMarket()">
-                <option value="1">1 Minitra (M1)</option>
-                <option value="5">5 Minitra (M5)</option>
-            </select>
-        </div>
-
-        <label style="text-align: left; display: block;">Tabilao Mihetsika Mivantana:</label>
-        <div class="chart-container" id="tv_live_chart"></div>
-
-        <div class="ta-widget-container" id="tv_analysis_widget"></div>
-
-        <button class="btn-analyze" onclick="startPureAnalysis()">START REAL ANALYSE 🔍</button>
-
-        <div class="result-box">
-            <div id="status" class="status">Miandry analyse...</div>
-            <div id="signal" class="signal"></div>
-            <div id="details" class="details" style="display: none;"></div>
-        </div>
-    </div>
+    <div id="signal" style="margin-top: 20px;"></div>
+    <div id="details"></div>
 
     <script>
-        // Mampiditra ny tabilao mivantana mihetsiketsika
-        function loadChart(pair) {
-            new TradingView.widget({
-                "width": "100%",
-                "height": "100%",
-                "symbol": "FX:" + pair,
-                "interval": document.getElementById("timeframe").value,
-                "timezone": "Etc/UTC",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "enable_publishing": false,
-                "hide_side_toolbar": true,
-                "allow_symbol_change": false,
-                "container_id": "tv_live_chart"
+    function analyze() {
+        const m = document.getElementById("market").value;
+        const tf = document.getElementById("tf").value;
+        fetch(`/api/analyze?market=${m}&tf=${tf}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("signal").innerHTML = data.signal;
+                document.getElementById("signal").className = data.style;
+                document.getElementById("details").innerHTML = `RSI: ${data.rsi}`;
             });
-        }
-
-        // Mampiditra ny maotera mpanadihady ny tondro teknika rehetra (RSI, Moving Averages...)
-        function loadAnalysisEngine(pair, tf) {
-            const container = document.getElementById("tv_analysis_widget");
-            container.innerHTML = ""; // Fafana ny teo aloha
-            
-            // Hanova ny format-n'ny timeframe ho an'ny widget TradingView
-            let tvInterval = "1m";
-            if(tf === "5") tvInterval = "5m";
-
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
-            script.async = true;
-            script.innerHTML = JSON.stringify({
-                "interval": tvInterval,
-                "width": "100%",
-                "isTransparent": true,
-                "height": "100%",
-                "symbol": "FX:" + pair,
-                "showHeading": false,
-                "screenMode": "normal",
-                "locale": "en",
-                "colorTheme": "dark"
-            });
-            container.appendChild(script);
-        }
-
-        function changeMarket() {
-            const pair = document.getElementById("market").value;
-            const tf = document.getElementById("timeframe").value;
-            loadChart(pair);
-            loadAnalysisEngine(pair, tf);
-        }
-
-        // Rehefa misokatra ny pejy voalohany
-        window.onload = function() {
-            loadChart("EURUSD");
-            loadAnalysisEngine("EURUSD", "1");
-        };
-
-        // Algorithm hamoahana ny valiny miankina amin'ny data ara-teknika avy amin'ny TradingView
-        function startPureAnalysis() {
-            const marketSelect = document.getElementById("market");
-            const pairName = marketSelect.options[marketSelect.selectedIndex].text;
-            const tfValue = document.getElementById("timeframe").value;
-            
-            const statusDiv = document.getElementById("status");
-            const signalDiv = document.getElementById("signal");
-            const detailsDiv = document.getElementById("details");
-
-            statusDiv.innerHTML = `⏳ AI mandrefy RSI, Bollinger Bands & Moving Averages amin'i ${pairName}...`;
-            statusDiv.style.color = "#ffcc00";
-            signalDiv.innerHTML = "";
-            detailsDiv.style.display = "none";
-
-            // Maka segondra 3 ny AI hamakiana ny firongatry ny tondro mivantana
-            setTimeout(() => {
-                statusDiv.innerHTML = `✅ Analyse Ara-teknika Vita [${pairName}]`;
-                statusDiv.style.color = "#4ef2d2";
-
-                const now = new Date();
-                const currentTime = now.toTimeString().split(' ')[0];
-                
-                // Manampy 1 minitra mialoha amin'ny ora hisorohana ny fahatarana (Execution Match)
-                now.setMinutes(now.getMinutes() + 1);
-                const executionTime = now.toTimeString().split(' ')[0];
-
-                // Mifidy tondro tsara indrindra miorina amin'ny live feed
-                const rsiWeight = Math.floor(Math.random() * 100); 
-
-                detailsDiv.style.display = "block";
-
-                // Ity no sivana (Filter Strategy) miankina amin'ny live trend weight
-                if (rsiWeight > 50) {
-                    signalDiv.innerHTML = "🟢 HIGHER (CALL)";
-                    signalDiv.className = "signal buy-style";
-                    detailsDiv.innerHTML = `
-                        🕒 ORA ANKEHITRINY: <b>${currentTime}</b><br>
-                        🎯 ORA HIDIRANA (EXP): <b>${executionTime}</b><br>
-                        ⏱ TIMEFRAME: <b>${tfValue} MIN</b><br>
-                        📊 PURE TREND: <b style="color: #00ff66;">BULLISH MOMENTUM (BUY)</b><br>
-                        💡 TOROMARIKA: Miandrasa ny labozia mihetsika eo ambony hikasika ny Support vao manindry <b>CALL</b>.
-                    `;
-                } else if (rsiWeight < 45) {
-                    signalDiv.innerHTML = "🔴 LOWER (PUT)";
-                    signalDiv.className = "signal sell-style";
-                    detailsDiv.innerHTML = `
-                        🕒 ORA ANKEHITRINY: <b>${currentTime}</b><br>
-                        🎯 ORA HIDIRANA (EXP): <b>${executionTime}</b><br>
-                        ⏱ TIMEFRAME: <b>${tfValue} MIN</b><br>
-                        📊 PURE TREND: <b style="color: #ff3333;">BEARISH MOMENTUM (SELL)</b><br>
-                        💡 TOROMARIKA: Miandrasa ny labozia mihetsika eo ambony hikasika ny Resistance vao manindry <b>PUT</b>.
-                    `;
-                } else {
-                    signalDiv.innerHTML = "🚫 NO SIGNAL";
-                    signalDiv.className = "signal nosignal-style";
-                    statusDiv.innerHTML = `⚠️ Tsena miandry (Sideways)`;
-                    statusDiv.style.color = "#ffcc00";
-                    detailsDiv.innerHTML = `<p style="text-align:center;">Mifanitsy ny herin'ny mpividy sy mpivarotra izao. Tsy azo idirana fa mety ho resy.</p>`;
-                }
-            }, 3000); 
-        }
+    }
     </script>
 </body>
 </html>
