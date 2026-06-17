@@ -1,23 +1,78 @@
-// Ampio ity lojika ity ao amin'ny script anao
-function startPureAnalysis() {
-    const tfValue = parseInt(document.getElementById("timeframe").value);
-    const now = new Date();
-    
-    // 1. Manome signal 1 segondra vao tonga ny fotoana hidirana
-    // 2. Mampiasa "Countdown" mba hanomananao ny tananao
-    
-    let secondsLeft = 3; 
-    const statusDiv = document.getElementById("status");
-    
-    const timer = setInterval(() => {
-        statusDiv.innerHTML = `⚠️ MIDIRA ANATIN'NY ${secondsLeft} SEGONDRA...`;
-        secondsLeft--;
-        
-        if (secondsLeft < 0) {
-            clearInterval(timer);
-            // Eto no hivoaka ny Signal (CALL/PUT)
-            // Rehefa tonga eto, dia midika fa "Tonga ny fotoana hidirana"
-            performSignalGeneration(); 
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI SIGNAL BOT</title>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <style>
+        body { background: #0f111a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .container { background: #161925; width: 100%; max-width: 400px; padding: 20px; border-radius: 16px; text-align: center; }
+        select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; cursor: pointer; }
+        button { background: linear-gradient(135deg, #ff007f, #7928ca); color: white; font-weight: bold; font-size: 16px; }
+        .chart-container { height: 200px; background: #131722; border-radius: 10px; margin: 10px 0; }
+        .signal-box { margin-top: 20px; padding: 20px; border-radius: 12px; background: #1e2235; }
+        .buy { color: #00ff66; font-size: 24px; font-weight: bold; }
+        .sell { color: #ff3333; font-size: 24px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 AI SIGNAL BOT</h1>
+        <select id="market" onchange="loadChart()">
+            <option value="EURUSD">EUR/USD</option>
+            <option value="GBPUSD">GBP/USD</option>
+        </select>
+        <select id="timeframe">
+            <option value="1">1 Minitra</option>
+            <option value="5">5 Minitra</option>
+        </select>
+        <div class="chart-container" id="tv_live_chart"></div>
+        <button onclick="startSignal()">START ANALYSIS 🔍</button>
+        <div class="signal-box">
+            <div id="status">Vonona</div>
+            <div id="signal"></div>
+        </div>
+    </div>
+
+    <script>
+        function loadChart() {
+            new TradingView.widget({
+                "width": "100%", "height": "100%", "symbol": "FX:" + document.getElementById("market").value,
+                "interval": "1", "theme": "dark", "container_id": "tv_live_chart"
+            });
         }
-    }, 1000);
-}
+        window.onload = loadChart;
+
+        function startSignal() {
+            const status = document.getElementById("status");
+            const signalDiv = document.getElementById("signal");
+            let count = 3;
+
+            // Countdown alohan'ny hidirana
+            const timer = setInterval(() => {
+                status.innerHTML = `⚠️ MIDIRA ANATIN'NY ${count} SEGONDRA...`;
+                count--;
+                if (count < 0) {
+                    clearInterval(timer);
+                    generateSignal();
+                }
+            }, 1000);
+        }
+
+        function generateSignal() {
+            const tf = parseInt(document.getElementById("timeframe").value);
+            const now = new Date();
+            const exp = new Date(now.getTime() + (tf * 60000));
+            const expStr = exp.toTimeString().substring(0, 5);
+            
+            const isBuy = Math.random() > 0.5; // Logic-nao eto
+            const signal = isBuy ? "🟢 CALL" : "🔴 PUT";
+            
+            document.getElementById("status").innerHTML = `🎯 ORA HIDIRANA (EXP): ${expStr}`;
+            document.getElementById("signal").innerHTML = signal;
+            document.getElementById("signal").className = isBuy ? "buy" : "sell";
+        }
+    </script>
+</body>
+</html>
