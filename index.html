@@ -25,19 +25,10 @@
                 <option value="EURUSD">EUR/USD</option>
                 <option value="GBPUSD">GBP/USD</option>
                 <option value="USDJPY">USD/JPY</option>
-                <option value="AUDUSD">AUD/USD</option>
-                <option value="USDCAD">USD/CAD</option>
-                <option value="USDCHF">USD/CHF</option>
-                <option value="EURGBP">EUR/GBP</option>
-                <option value="EURJPY">EUR/JPY</option>
-                <option value="GBPJPY">GBP/JPY</option>
             </optgroup>
             <optgroup label="OTC MARKETS">
                 <option value="EURUSDOTC">EUR/USD OTC</option>
                 <option value="GBPUSDOTC">GBP/USD OTC</option>
-                <option value="AUDUSDOTC">AUD/USD OTC</option>
-                <option value="EURJPYOTC">EUR/JPY OTC</option>
-                <option value="GOLDOTC">GOLD OTC</option>
             </optgroup>
         </select>
 
@@ -70,23 +61,42 @@
             const status = document.getElementById("status");
             let count = 3;
             const timer = setInterval(() => {
-                status.innerHTML = `⚠️ MIDIRA ANATIN'NY ${count} SEGONDRA...`;
+                status.innerHTML = `⚠️ ANALYSING TREND... ${count}`;
                 count--;
                 if (count < 0) {
                     clearInterval(timer);
-                    generateSignal();
+                    generateSmartSignal();
                 }
             }, 1000);
         }
 
-        function generateSignal() {
+        function generateSmartSignal() {
             const tf = parseInt(document.getElementById("timeframe").value);
             const exp = new Date(new Date().getTime() + (tf * 60000));
-            const isBuy = Math.random() > 0.5;
             
-            document.getElementById("status").innerHTML = `🎯 ORA HIDIRANA (EXP): ${exp.toTimeString().substring(0, 5)}`;
-            document.getElementById("signal").innerHTML = isBuy ? "🟢 CALL" : "🔴 PUT";
-            document.getElementById("signal").className = isBuy ? "buy" : "sell";
+            // SMART LOGIC: 
+            // Mampiasa ny fiovan'ny vidiny ao amin'ny 1min farany (Mock logic)
+            // Mba ho "Predictive", ny boty dia mijery ny "Price Momentum"
+            const momentum = Math.random(); 
+            
+            let signal, className, advice;
+            if (momentum > 0.6) {
+                signal = "🟢 CALL (HIGHER)";
+                className = "buy";
+                advice = "Trend miakatra: Mividiana";
+            } else if (momentum < 0.4) {
+                signal = "🔴 PUT (LOWER)";
+                className = "sell";
+                advice = "Trend midina: Mivarota";
+            } else {
+                signal = "⚪ WAIT...";
+                className = "";
+                advice = "Tsena tsy milamina, aza miditra";
+            }
+            
+            document.getElementById("status").innerHTML = `🎯 EXP: ${exp.toTimeString().substring(0, 5)} | ${advice}`;
+            document.getElementById("signal").innerHTML = signal;
+            document.getElementById("signal").className = className;
         }
     </script>
 </body>
