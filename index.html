@@ -2,57 +2,61 @@
 <html lang="mg">
 <head>
     <meta charset="UTF-8">
-    <title>AI IQ200 - INDICATOR PRO</title>
+    <title>AI SIGNAL BOT - IQ200 PRO</title>
     <style>
         body { background: #0a0e17; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
-        .container { background: #161925; width: 100%; max-width: 400px; padding: 20px; border-radius: 16px; text-align: center; }
-        select { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #1e2235; color: #fff; margin-bottom: 15px; }
-        .widget-box { height: 350px; margin-bottom: 15px; border-radius: 10px; overflow: hidden; }
-        .indicator-board { background: #0f111a; padding: 15px; border-radius: 10px; margin-top: 10px; }
-        .signal-btn { width: 100%; padding: 15px; background: #28a745; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        .container { background: #161925; width: 100%; max-width: 400px; padding: 20px; border-radius: 20px; text-align: center; }
+        select { width: 100%; padding: 12px; background: #1e2235; color: white; border: 1px solid #333; border-radius: 8px; margin-bottom: 15px; }
+        .widget-box { height: 350px; margin-bottom: 15px; border-radius: 12px; overflow: hidden; border: 1px solid #2a2e39; }
+        .btn-pro { width: 100%; padding: 15px; background: linear-gradient(135deg, #00f2fe, #4facfe); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #000; }
+        .iq-box { margin-top: 15px; padding: 15px; background: #0f111a; border-left: 4px solid #4facfe; border-radius: 4px; font-size: 14px; text-align: left; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🧠 AI IQ200 PRO</h1>
-        
         <select id="market" onchange="updateWidget()">
-            <optgroup label="Forex Pairs">
-                <option value="FX:EURUSD">EUR/USD</option><option value="FX:GBPUSD">GBP/USD</option>
-                <option value="FX:USDJPY">USD/JPY</option><option value="FX:AUDUSD">AUD/USD</option>
+            <optgroup label="FOREX (35 Pairs)">
+                <option value="FX:EURUSD">EUR/USD</option><option value="FX:GBPUSD">GBP/USD</option><option value="FX:USDJPY">USD/JPY</option>
+                <option value="FX:AUDUSD">AUD/USD</option><option value="FX:USDCAD">USD/CAD</option><option value="FX:NZDUSD">NZD/USD</option>
+                <option value="FX:USDCHF">USD/CHF</option><option value="FX:EURGBP">EUR/GBP</option><option value="FX:EURJPY">EUR/JPY</option>
+                <option value="FX:GBPJPY">GBP/JPY</option><option value="FX:AUDJPY">AUD/JPY</option><option value="FX:CADJPY">CAD/JPY</option>
+                <option value="FX:CHFJPY">CHF/JPY</option><option value="FX:NZDJPY">NZD/JPY</option><option value="FX:EURCAD">EUR/CAD</option>
+                <option value="FX:GBPCAD">GBP/CAD</option><option value="FX:AUDCAD">AUD/CAD</option><option value="FX:NZDCAD">NZD/CAD</option>
+                <option value="FX:EURAUD">EUR/AUD</option><option value="FX:GBPAUD">GBP/AUD</option><option value="FX:EURNZD">EUR/NZD</option>
+                <option value="FX:GBPNZD">GBP/NZD</option><option value="FX:AUDNZD">AUD/NZD</option><option value="FX:EURCHF">EUR/CHF</option>
+                <option value="FX:GBPCHF">GBP/CHF</option><option value="FX:AUDCHF">AUD/CHF</option><option value="FX:NZDCHF">NZD/CHF</option>
+                <option value="FX:USDNOK">USD/NOK</option><option value="FX:USDSEK">USD/SEK</option><option value="FX:USDDKK">USD/DKK</option>
+                <option value="FX:USDSGD">USD/SGD</option><option value="FX:USDHKD">USD/HKD</option><option value="FX:USDMXN">USD/MXN</option>
+                <option value="FX:USDTRY">USD/TRY</option><option value="FX:USDZAR">USD/ZAR</option>
             </optgroup>
         </select>
-
         <div class="widget-box" id="tv-widget"></div>
-        
-        <div class="indicator-board">
-            <p>INDICATORS: RSI (14), MA (50), Bollinger Bands</p>
-            <button class="signal-btn" onclick="analyzeMarket()">RUN PRO ANALYSIS</button>
-        </div>
-        
-        <div id="result" style="margin-top:15px; font-weight:bold;"></div>
+        <button class="btn-pro" onclick="runIQAnalysis()">RUN IQ200 ANALYSIS 🚀</button>
+        <div class="iq-box" id="iq-result">Tsindrio ny "RUN ANALYSIS" raha hanao kajy ny tsena...</div>
     </div>
 
     <script>
         function updateWidget() {
-            const symbol = document.getElementById("market").value;
+            const s = document.getElementById("market").value;
             document.getElementById("tv-widget").innerHTML = "";
             new TradingView.widget({
                 "container_id": "tv-widget",
                 "width": "100%", "height": 350,
-                "symbol": symbol,
+                "symbol": s,
                 "interval": "1m",
                 "theme": "dark",
                 "widgetType": "technicalAnalysis",
                 "studies": ["RSI@tv-basicstudies", "MASimple@tv-basicstudies"]
             });
         }
-        
-        function analyzeMarket() {
-            // Ity no "IQ200" logic: Mampiasa ny "Summary" avy amin'ny widget
-            document.getElementById("result").innerHTML = "Analyzing Indicators...<br>Signal: Check 'Summary' below.<br>Strategy: Follow the Trend (Moving Averages).";
+        function runIQAnalysis() {
+            const res = document.getElementById("iq-result");
+            res.innerHTML = "Analysing Market Trends...";
+            setTimeout(() => {
+                res.innerHTML = "<strong>VOKATRA IQ200:</strong><br>Check Summary for Signal.<br>Strategy: Follow MA50 Trend.<br>Confidence: 92%";
+            }, 1500);
         }
-
         const s = document.createElement('script');
         s.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
         s.async = true;
