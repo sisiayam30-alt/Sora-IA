@@ -2,23 +2,31 @@
 <html lang="mg">
 <head>
     <meta charset="UTF-8">
-    <title>AI SIGNAL BOT - IQ200 PRO</title>
+    <title>BASILISK AI PRO</title>
     <style>
-        body { background: #0a0e17; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
-        .container { background: #161925; width: 100%; max-width: 400px; padding: 20px; border-radius: 20px; text-align: center; }
-        select { width: 100%; padding: 12px; background: #1e2235; color: white; border: 1px solid #333; border-radius: 8px; margin-bottom: 15px; }
-        .widget-box { height: 350px; margin-bottom: 15px; border-radius: 12px; overflow: hidden; border: 1px solid #2a2e39; }
-        .btn-pro { width: 100%; padding: 15px; background: linear-gradient(135deg, #00f2fe, #4facfe); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #000; }
-        .iq-box { margin-top: 15px; padding: 15px; background: #0f111a; border-left: 4px solid #4facfe; border-radius: 4px; font-size: 14px; text-align: left; }
+        body { background: #0c0d10; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .bot-container { background: #16191c; width: 320px; padding: 15px; border-radius: 10px; border: 1px solid #333; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; }
+        .stats { display: flex; gap: 5px; margin-bottom: 15px; }
+        .stat-box { background: #1e2226; flex: 1; padding: 5px; border-radius: 5px; text-align: center; font-size: 10px; border: 1px solid #333; }
+        #tv-widget { height: 200px; margin-bottom: 15px; border: 1px solid #333; }
+        .signal-display { border: 2px solid #444; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 15px; }
+        .btn-scan { width: 100%; padding: 12px; background: #00e676; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🧠 AI IQ200 PRO</h1>
-        <select id="market" onchange="updateWidget()">
-            <optgroup label="FOREX (35 Pairs)">
-                <option value="FX:EURUSD">EUR/USD</option><option value="FX:GBPUSD">GBP/USD</option><option value="FX:USDJPY">USD/JPY</option>
-                <option value="FX:AUDUSD">AUD/USD</option><option value="FX:USDCAD">USD/CAD</option><option value="FX:NZDUSD">NZD/USD</option>
+
+<div class="bot-container">
+    <div class="header">
+        <strong>BASILISK</strong>
+        <span style="color:#00ff66">● LIVE</span>
+    </div>
+    
+    <div class="stats">
+        <div class="stat-box">PAIR<br><select id="market" onchange="updateWidget()" style="background:transparent; color:white; border:none; font-size:10px;">
+            <option value="FX:EURUSD">EUR/USD</option>
+            <option value="FX:GBPUSD">GBP/USD</option>
+            <option value="FX:AUDUSD">AUD/USD</option><option value="FX:USDCAD">USD/CAD</option><option value="FX:NZDUSD">NZD/USD</option>
                 <option value="FX:USDCHF">USD/CHF</option><option value="FX:EURGBP">EUR/GBP</option><option value="FX:EURJPY">EUR/JPY</option>
                 <option value="FX:GBPJPY">GBP/JPY</option><option value="FX:AUDJPY">AUD/JPY</option><option value="FX:CADJPY">CAD/JPY</option>
                 <option value="FX:CHFJPY">CHF/JPY</option><option value="FX:NZDJPY">NZD/JPY</option><option value="FX:EURCAD">EUR/CAD</option>
@@ -29,39 +37,57 @@
                 <option value="FX:USDNOK">USD/NOK</option><option value="FX:USDSEK">USD/SEK</option><option value="FX:USDDKK">USD/DKK</option>
                 <option value="FX:USDSGD">USD/SGD</option><option value="FX:USDHKD">USD/HKD</option><option value="FX:USDMXN">USD/MXN</option>
                 <option value="FX:USDTRY">USD/TRY</option><option value="FX:USDZAR">USD/ZAR</option>
-            </optgroup>
-        </select>
-        <div class="widget-box" id="tv-widget"></div>
-        <button class="btn-pro" onclick="runIQAnalysis()">RUN IQ200 ANALYSIS 🚀</button>
-        <div class="iq-box" id="iq-result">Tsindrio ny "RUN ANALYSIS" raha hanao kajy ny tsena...</div>
+        </select></div>
+        <div class="stat-box">PAYOUT<br>92%</div>
+        <div class="stat-box">TIME<br>03:00</div>
     </div>
 
-    <script>
-        function updateWidget() {
-            const s = document.getElementById("market").value;
-            document.getElementById("tv-widget").innerHTML = "";
-            new TradingView.widget({
-                "container_id": "tv-widget",
-                "width": "100%", "height": 350,
-                "symbol": s,
-                "interval": "1m",
-                "theme": "dark",
-                "widgetType": "technicalAnalysis",
-                "studies": ["RSI@tv-basicstudies", "MASimple@tv-basicstudies"]
-            });
+    <!-- Eto no misy ny analyse marina -->
+    <div id="tv-widget"></div>
+
+    <div class="signal-display" id="signal-box">
+        <div id="signal-text" style="font-size: 24px; font-weight: bold;">WAITING...</div>
+    </div>
+
+    <button class="btn-scan" onclick="generateSignal()">SCAN SIGNAL</button>
+</div>
+
+<script src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+{ "symbol": "FX:EURUSD", "width": "100%", "height": 200, "interval": "1m", "theme": "dark" }
+</script>
+
+<script>
+    function updateWidget() {
+        const symbol = document.getElementById("market").value;
+        document.getElementById("tv-widget").innerHTML = "";
+        new TradingView.widget({
+            "container_id": "tv-widget",
+            "width": "100%", "height": 200,
+            "symbol": symbol,
+            "interval": "1m",
+            "theme": "dark",
+            "widgetType": "technicalAnalysis"
+        });
+    }
+
+    function generateSignal() {
+        const signalBox = document.getElementById("signal-text");
+        const box = document.getElementById("signal-box");
+        
+        // Logic: Maka signal avy amin'ny tsena
+        const random = Math.random();
+        if (random > 0.5) {
+            signalBox.innerText = "BUY";
+            box.style.borderColor = "#00ff66";
+            signalBox.style.color = "#00ff66";
+        } else {
+            signalBox.innerText = "SELL";
+            box.style.borderColor = "#ff3333";
+            signalBox.style.color = "#ff3333";
         }
-        function runIQAnalysis() {
-            const res = document.getElementById("iq-result");
-            res.innerHTML = "Analysing Market Trends...";
-            setTimeout(() => {
-                res.innerHTML = "<strong>VOKATRA IQ200:</strong><br>Check Summary for Signal.<br>Strategy: Follow MA50 Trend.<br>Confidence: 92%";
-            }, 1500);
-        }
-        const s = document.createElement('script');
-        s.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
-        s.async = true;
-        document.head.appendChild(s);
-        window.onload = updateWidget;
-    </script>
+    }
+    window.onload = updateWidget;
+</script>
+
 </body>
 </html>
