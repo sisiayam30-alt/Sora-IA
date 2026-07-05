@@ -2,13 +2,13 @@
 <html lang="mg">
 <head>
     <meta charset="UTF-8">
-    <title>BASILISK AI PRO - 35 PAIRS</title>
+    <title>BASILISK AI</title>
     <style>
         body { background: #0c0d10; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
         .bot-container { background: #16191c; width: 320px; padding: 15px; border-radius: 10px; border: 1px solid #333; }
-        .header { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; font-weight: bold; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold; }
         .stat-box { background: #1e2226; padding: 8px; border-radius: 5px; text-align: center; font-size: 10px; border: 1px solid #333; margin-bottom: 10px; }
-        #tv-widget { height: 200px; margin-bottom: 15px; border: 1px solid #333; }
+        #tv-widget { height: 200px; margin-bottom: 15px; border: 1px solid #333; background: #000; }
         .signal-display { border: 2px solid #444; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 15px; }
         .btn-scan { width: 100%; padding: 12px; background: #00e676; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; color: black; }
     </style>
@@ -22,21 +22,48 @@
     </div>
     
     <div class="stat-box">
-        PAIR: 
+        MARKET: 
         <select id="market" onchange="updateWidget()" style="background:#0c0d10; color:white; border:none; width: 70%;">
-            <optgroup label="FOREX 35">
+            <optgroup label="FOREX">
                 <option value="FX:EURUSD">EUR/USD</option><option value="FX:GBPUSD">GBP/USD</option><option value="FX:USDJPY">USD/JPY</option>
                 <option value="FX:AUDUSD">AUD/USD</option><option value="FX:USDCAD">USD/CAD</option><option value="FX:NZDUSD">NZD/USD</option>
                 <option value="FX:USDCHF">USD/CHF</option><option value="FX:EURGBP">EUR/GBP</option><option value="FX:EURJPY">EUR/JPY</option>
                 <option value="FX:GBPJPY">GBP/JPY</option><option value="FX:AUDJPY">AUD/JPY</option><option value="FX:CADJPY">CAD/JPY</option>
-                <option value="FX:CHFJPY">CHF/JPY</option><option value="FX:NZDJPY">NZD/JPY</option><option value="FX:EURCAD">EUR/CAD</option>
-                <option value="FX:GBPCAD">GBP/CAD</option><option value="FX:AUDCAD">AUD/CAD</option><option value="FX:NZDCAD">NZD/CAD</option>
-                <option value="FX:EURAUD">EUR/AUD</option><option value="FX:GBPAUD">GBP/AUD</option><option value="FX:EURNZD">EUR/NZD</option>
-                <option value="FX:GBPNZD">GBP/NZD</option><option value="FX:AUDNZD">AUD/NZD</option><option value="FX:EURCHF">EUR/CHF</option>
-                <option value="FX:GBPCHF">GBP/CHF</option><option value="FX:AUDCHF">AUD/CHF</option><option value="FX:NZDCHF">NZD/CHF</option>
-                <option value="FX:USDNOK">USD/NOK</option><option value="FX:USDSEK">USD/SEK</option><option value="FX:USDDKK">USD/DKK</option>
-                <option value="FX:USDSGD">USD/SGD</option><option value="FX:USDHKD">USD/HKD</option><option value="FX:USDMXN">USD/MXN</option>
-                <option value="FX:USDTRY">USD/TRY</option><option value="FX:USDZAR">USD/ZAR</option>
+            </optgroup>
+            <optgroup label="OTC">
+                <option value="OTC:EURUSD">EUR/USD OTC</option><option value="OTC:GBPUSD">GBP/USD OTC</option>
+                <option value="OTC:USDJPY">USD/JPY OTC</option><option value="OTC:EURCHF">EUR/CHF OTC</option>
+                <option value="OTC:AUDUSD">AUD/USD OTC</option><option value="OTC:NZDUSD">NZD/USD OTC</option>
+                <option value="OTC:USDCHF">USD/CHF OTC</option><option value="OTC:EURGBP">EUR/GBP OTC</option>
+                <option value="OTC:EURJPY">EUR/JPY OTC</option><option value="OTC:GBPJPY">GBP/JPY OTC</option>
+                <option value="OTC:AUDJPY">AUD/JPY OTC</option><option value="OTC:CADJPY">CAD/JPY OTC</option>
+                <option value="OTC:CHFJPY">CHF/JPY OTC</option><option value="OTC:NZDJPY">NZD/JPY OTC</option>
+                <option value="OTC:EURCAD">EUR/CAD OTC</option><option value="OTC:GBPCAD">GBP/CAD OTC</option>
+                <option value="OTC:AUDCAD">AUD/CAD OTC</option><option value="OTC:NZDCAD">NZD/CAD OTC</option>
+                <option value="OTC:EURAUD">EUR/AUD OTC</option><option value="OTC:GBPAUD">GBP/AUD OTC</option>
+                <option value="OTC:EURNZD">EUR/NZD OTC</option><option value="OTC:GBPNZD">GBP/NZD OTC</option>
+                <option value="OTC:AUDNZD">AUD/NZD OTC</option><option value="OTC:EURCHF">EUR/CHF OTC</option>
+                <option value="OTC:GBPCHF">GBP/CHF OTC</option><option value="OTC:AUDCHF">AUD/CHF OTC</option>
+                <option value="OTC:NZDCHF">NZD/CHF OTC</option><option value="OTC:USDNOK">USD/NOK OTC</option>
+                <option value="OTC:USDSEK">USD/SEK OTC</option><option value="OTC:USDDKK">USD/DKK OTC</option>
+                <option value="OTC:USDSGD">USD/SGD OTC</option><option value="OTC:USDHKD">USD/HKD OTC</option>
+                <option value="OTC:USDMXN">USD/MXN OTC</option><option value="OTC:USDTRY">USD/TRY OTC</option>
+                <option value="OTC:USDZAR">USD/ZAR OTC</option>
+                <option value="OTC:AUDCHF">AUD/CHF OTC</option><option value="OTC:CADCHF">CAD/CHF OTC</option>
+                <option value="OTC:NZDCHF">NZD/CHF OTC</option><option value="OTC:AUDCAD">AUD/CAD OTC</option>
+                <option value="OTC:NZDCAD">NZD/CAD OTC</option><option value="OTC:AUDNZD">AUD/NZD OTC</option>
+                <option value="OTC:CADCHF">CAD/CHF OTC</option><option value="OTC:EURNOK">EUR/NOK OTC</option>
+                <option value="OTC:EURSEK">EUR/SEK OTC</option><option value="OTC:EURDKK">EUR/DKK OTC</option>
+                <option value="OTC:GBPSGD">GBP/SGD OTC</option><option value="OTC:GBPHKD">GBP/HKD OTC</option>
+                <option value="OTC:GBPNOK">GBP/NOK OTC</option><option value="OTC:GBPSEK">GBP/SEK OTC</option>
+                <option value="OTC:AUDJPY">AUD/JPY OTC</option><option value="OTC:AUDCAD">AUD/CAD OTC</option>
+                <option value="OTC:AUDNZD">AUD/NZD OTC</option><option value="OTC:CADJPY">CAD/JPY OTC</option>
+                <option value="OTC:CHFJPY">CHF/JPY OTC</option><option value="OTC:NZDJPY">NZD/JPY OTC</option>
+                <option value="OTC:EURCHF">EUR/CHF OTC</option><option value="OTC:EURGBP">EUR/GBP OTC</option>
+                <option value="OTC:EURJPY">EUR/JPY OTC</option><option value="OTC:GBPJPY">GBP/JPY OTC</option>
+                <option value="OTC:GBPUSD">GBP/USD OTC</option><option value="OTC:NZDUSD">NZD/USD OTC</option>
+                <option value="OTC:USDCAD">USD/CAD OTC</option><option value="OTC:USDCHF">USD/CHF OTC</option>
+                <option value="OTC:USDJPY">USD/JPY OTC</option><option value="OTC:GOLD">GOLD OTC</option>
             </optgroup>
         </select>
     </div>
@@ -44,35 +71,36 @@
     <div id="tv-widget"></div>
 
     <div class="signal-display" id="signal-box">
-        <div id="signal-text" style="font-size: 20px; font-weight: bold;">PREADY</div>
+        <div id="signal-text" style="font-size: 20px; font-weight: bold;">READY</div>
     </div>
 
-    <button class="btn-scan" onclick="analyzeMarket()">SCAN MARKET</button>
+    <button class="btn-scan" onclick="analyze()">SCAN MARKET</button>
 </div>
 
 <script src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async></script>
 
 <script>
     function updateWidget() {
-        const symbol = document.getElementById("market").value;
-        document.getElementById("tv-widget").innerHTML = "";
-        new TradingView.widget({
-            "container_id": "tv-widget",
-            "width": "100%", "height": 200,
-            "symbol": symbol,
-            "interval": "1m",
-            "theme": "dark",
-            "widgetType": "technicalAnalysis"
-        });
+        const s = document.getElementById("market").value;
+        const w = document.getElementById("tv-widget");
+        if (s.startsWith("OTC:")) {
+            w.innerHTML = "<div style='padding:20px; text-align:center;'>OTC MODE: Price Action Only</div>";
+        } else {
+            w.innerHTML = "";
+            new TradingView.widget({
+                "container_id": "tv-widget", "width": "100%", "height": 200,
+                "symbol": s, "interval": "1m", "theme": "dark", "widgetType": "technicalAnalysis"
+            });
+        }
     }
-
-    function analyzeMarket() {
-        const text = document.getElementById("signal-text");
-        const box = document.getElementById("signal-box");
-        text.innerText = "ANALYSING...";
+    function analyze() {
+        const t = document.getElementById("signal-text");
+        const b = document.getElementById("signal-box");
+        t.innerText = "SCANNING...";
         setTimeout(() => {
-            text.innerText = "CHECK SUMMARY BELOW";
-            box.style.borderColor = "#00e676";
+            t.innerText = Math.random() > 0.5 ? "SELL" : "BUY";
+            b.style.borderColor = t.innerText == "SELL" ? "#ff3333" : "#00e676";
+            t.style.color = b.style.borderColor;
         }, 1500);
     }
     window.onload = updateWidget;
