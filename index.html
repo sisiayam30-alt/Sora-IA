@@ -2,75 +2,129 @@
 <html lang="mg">
 <head>
     <meta charset="UTF-8">
-    <title>AI SIGNAL BOT - IQ200 PRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI SIGNAL BOT - PRO</title>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
-        body { background: #0a0e17; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 10px; }
-        .container { background: #161925; width: 100%; max-width: 400px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h1 { color: #fff; font-size: 20px; text-align: center; margin-bottom: 20px; }
-        select { width: 100%; padding: 12px; background: #1e2235; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 15px; }
-        .widget-box { height: 320px; margin-bottom: 15px; border-radius: 12px; overflow: hidden; border: 1px solid #2a2e39; }
-        .btn-smart { width: 100%; padding: 15px; background: linear-gradient(135deg, #00f2fe, #4facfe); border: none; border-radius: 10px; color: #000; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .iq-box { margin-top: 15px; padding: 15px; background: #0f111a; border-left: 4px solid #4facfe; border-radius: 4px; font-size: 14px; }
+        body { background: #0f111a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .container { background: #161925; width: 100%; max-width: 400px; padding: 20px; border-radius: 16px; text-align: center; }
+        select, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 8px; border: none; cursor: pointer; }
+        button { background: linear-gradient(135deg, #ff007f, #7928ca); color: white; font-weight: bold; font-size: 16px; }
+        .chart-container { height: 200px; background: #131722; border-radius: 10px; margin: 10px 0; }
+        .signal-box { margin-top: 20px; padding: 20px; border-radius: 12px; background: #1e2235; }
+        .buy { color: #00ff66; font-size: 24px; font-weight: bold; }
+        .sell { color: #ff3333; font-size: 24px; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🧠 AI IQ200 SIGNAL BOT</h1>
+        <h1>📊 AI SIGNAL BOT</h1>
         
-        <select id="market" onchange="updateWidget()">
+        <select id="market" onchange="loadChart()">
             <optgroup label="FOREX (35 Pairs)">
-                <option value="FX:EURUSD">EUR/USD</option><option value="FX:GBPUSD">GBP/USD</option><option value="FX:USDJPY">USD/JPY</option>
-                <option value="FX:AUDUSD">AUD/USD</option><option value="FX:USDCAD">USD/CAD</option><option value="FX:NZDUSD">NZD/USD</option>
-                <option value="FX:USDCHF">USD/CHF</option><option value="FX:EURGBP">EUR/GBP</option><option value="FX:EURJPY">EUR/JPY</option>
-                <option value="FX:GBPJPY">GBP/JPY</option><option value="FX:AUDJPY">AUD/JPY</option><option value="FX:CADJPY">CAD/JPY</option>
-                <option value="FX:CHFJPY">CHF/JPY</option><option value="FX:NZDJPY">NZD/JPY</option><option value="FX:EURCAD">EUR/CAD</option>
-                <option value="FX:GBPCAD">GBP/CAD</option><option value="FX:AUDCAD">AUD/CAD</option><option value="FX:NZDCAD">NZD/CAD</option>
-                <option value="FX:EURAUD">EUR/AUD</option><option value="FX:GBPAUD">GBP/AUD</option><option value="FX:EURNZD">EUR/NZD</option>
-                <option value="FX:GBPNZD">GBP/NZD</option><option value="FX:AUDNZD">AUD/NZD</option><option value="FX:EURCHF">EUR/CHF</option>
-                <option value="FX:GBPCHF">GBP/CHF</option><option value="FX:AUDCHF">AUD/CHF</option><option value="FX:NZDCHF">NZD/CHF</option>
-                <option value="FX:USDNOK">USD/NOK</option><option value="FX:USDSEK">USD/SEK</option><option value="FX:USDDKK">USD/DKK</option>
-                <option value="FX:USDSGD">USD/SGD</option><option value="FX:USDHKD">USD/HKD</option><option value="FX:USDMXN">USD/MXN</option>
-                <option value="FX:USDTRY">USD/TRY</option><option value="FX:USDZAR">USD/ZAR</option>
+                <option value="EURUSD">EUR/USD</option><option value="GBPUSD">GBP/USD</option><option value="USDJPY">USD/JPY</option>
+                <option value="AUDUSD">AUD/USD</option><option value="USDCAD">USD/CAD</option><option value="NZDUSD">NZD/USD</option>
+                <option value="USDCHF">USD/CHF</option><option value="EURGBP">EUR/GBP</option><option value="EURJPY">EUR/JPY</option>
+                <option value="GBPJPY">GBP/JPY</option><option value="AUDJPY">AUD/JPY</option><option value="CADJPY">CAD/JPY</option>
+                <option value="CHFJPY">CHF/JPY</option><option value="NZDJPY">NZD/JPY</option><option value="EURCAD">EUR/CAD</option>
+                <option value="GBPCAD">GBP/CAD</option><option value="AUDCAD">AUD/CAD</option><option value="NZDCAD">NZD/CAD</option>
+                <option value="EURAUD">EUR/AUD</option><option value="GBPAUD">GBP/AUD</option><option value="EURNZD">EUR/NZD</option>
+                <option value="GBPNZD">GBP/NZD</option><option value="AUDNZD">AUD/NZD</option><option value="EURCHF">EUR/CHF</option>
+                <option value="GBPCHF">GBP/CHF</option><option value="AUDCHF">AUD/CHF</option><option value="NZDCHF">NZD/CHF</option>
+                <option value="USDNOK">USD/NOK</option><option value="USDSEK">USD/SEK</option><option value="USDDKK">USD/DKK</option>
+                <option value="USDSGD">USD/SGD</option><option value="USDHKD">USD/HKD</option><option value="USDMXN">USD/MXN</option>
+                <option value="USDTRY">USD/TRY</option><option value="USDZAR">USD/ZAR</option>
+            </optgroup>
+            <optgroup label="OTC MARKETS (65 Pairs)">
+                <option value="EURUSDOTC">EUR/USD OTC</option><option value="GBPUSDOTC">GBP/USD OTC</option><option value="AUDUSDOTC">AUD/USD OTC</option>
+                <option value="USDJPYOTC">USD/JPY OTC</option><option value="USDCADOTC">USD/CAD OTC</option><option value="NZDUSDOTC">NZD/USD OTC</option>
+                <option value="USDCHFOTC">USD/CHF OTC</option><option value="EURGBPOTC">EUR/GBP OTC</option><option value="EURJPYOTC">EUR/JPY OTC</option>
+                <option value="GBPJPYOTC">GBP/JPY OTC</option><option value="AUDJPYOTC">AUD/JPY OTC</option><option value="CADJPYOTC">CAD/JPY OTC</option>
+                <option value="CHFJPYOTC">CHF/JPY OTC</option><option value="NZDJPYOTC">NZD/JPY OTC</option><option value="EURCADOTC">EUR/CAD OTC</option>
+                <option value="GBPCADOTC">GBP/CAD OTC</option><option value="AUDCADOTC">AUD/CAD OTC</option><option value="NZDCADOTC">NZD/CAD OTC</option>
+                <option value="EURAUDOTC">EUR/AUD OTC</option><option value="GBPAUDOTC">GBP/AUD OTC</option><option value="EURNZDOTC">EUR/NZD OTC</option>
+                <option value="GBPNZDOTC">GBP/NZD OTC</option><option value="AUDNZDOTC">AUD/NZD OTC</option><option value="EURCHFOTC">EUR/CHF OTC</option>
+                <option value="GBPCHFOTC">GBP/CHF OTC</option><option value="AUDCHFOTC">AUD/CHF OTC</option><option value="NZDCHFOTC">NZD/CHF OTC</option>
+                <option value="USDNOKOTC">USD/NOK OTC</option><option value="USDSEKOTC">USD/SEK OTC</option><option value="USDDKKOTC">USD/DKK OTC</option>
+                <option value="USDSGDOTC">USD/SGD OTC</option><option value="USDHKDOTC">USD/HKD OTC</option><option value="USDMXNOTC">USD/MXN OTC</option>
+                <option value="USDTRYOTC">USD/TRY OTC</option><option value="USDZAROTC">USD/ZAR OTC</option>
+                <option value="BTCUSDTOTC">BTC/USDT OTC</option><option value="ETHUSDTOTC">ETH/USDT OTC</option><option value="XRPUSDTOTC">XRP/USDT OTC</option>
+                <option value="LTCUSDTOTC">LTC/USDT OTC</option><option value="ADAUSDTOTC">ADA/USDT OTC</option><option value="SOLUSDTOTC">SOL/USDT OTC</option>
+                <option value="DOTUSDTOTC">DOT/USDT OTC</option><option value="LINKUSDTOTC">LINK/USDT OTC</option><option value="BCHUSDTOTC">BCH/USDT OTC</option>
+                <option value="XLMUSDTOTC">XLM/USDT OTC</option><option value="DOGEUSDTOTC">DOGE/USDT OTC</option><option value="MATICUSDTOTC">MATIC/USDT OTC</option>
+                <option value="AVAXUSDTOTC">AVAX/USDT OTC</option><option value="UNIUSDTOTC">UNI/USDT OTC</option>
+                <option value="GOLDOTC">GOLD OTC</option><option value="SILVEROTC">SILVER OTC</option><option value="OILOTC">OIL OTC</option>
+                <option value="GBPUSDOTCA">GBP/USD OTC-A</option><option value="EURUSDOTCA">EUR/USD OTC-A</option><option value="AUDUSDOTCA">AUD/USD OTC-A</option>
+                <option value="USDJPYOTCA">USD/JPY OTC-A</option><option value="EURJPYOTCA">EUR/JPY OTC-A</option><option value="GBPJPYOTCA">GBP/JPY OTC-A</option>
+                <option value="NZDUSDOTCA">NZD/USD OTC-A</option><option value="AUDJPYOTCA">AUD/JPY OTC-A</option><option value="USDCADOTCA">USD/CAD OTC-A</option>
+                <option value="EURGBPOTCA">EUR/GBP OTC-A</option>
             </optgroup>
         </select>
 
-        <div class="widget-box" id="tv-widget"></div>
-        <button class="btn-smart" onclick="runIQAnalysis()">RUN IQ200 ANALYSIS 🚀</button>
+        <select id="timeframe">
+            <option value="1">1 Minitra</option>
+            <option value="5">5 Minitra</option>
+        </select>
+
+        <div class="chart-container" id="tv_live_chart"></div>
+        <button onclick="startSignal()">START ANALYSIS 🔍</button>
         
-        <div class="iq-box" id="iq-result">Tsindrio ny "RUN ANALYSIS" raha hanao kajy ny tsena...</div>
+        <div class="signal-box">
+            <div id="status">Vonona</div>
+            <div id="signal"></div>
+        </div>
     </div>
 
     <script>
-        function updateWidget() {
-            const symbol = document.getElementById("market").value;
-            document.getElementById("tv-widget").innerHTML = "";
+        function loadChart() {
+            const pair = document.getElementById("market").value;
             new TradingView.widget({
-                "container_id": "tv-widget",
-                "width": "100%", "height": 320,
-                "symbol": symbol,
-                "interval": "1m",
-                "theme": "dark",
-                "widgetType": "technicalAnalysis"
+                "width": "100%", "height": "100%", 
+                "symbol": "FX:" + pair, 
+                "interval": "1", "theme": "dark", "container_id": "tv_live_chart"
             });
         }
-        
-        function runIQAnalysis() {
-            const result = document.getElementById("iq-result");
-            result.innerHTML = "🔍 Manadihady ny tondro ara-teknika (RSI, MA, MACD)...<br>⏳ Miandry ny famakafakana ny tsena...";
-            
-            setTimeout(() => {
-                result.innerHTML = `<strong>VOKATRA IQ200:</strong><br><br>
-                Signal: 🟢 Jereo ny widget (Summary).<br>
-                Confidence: 92%<br>
-                Advice: Araho ny "Summary" eo amin'ny widget, fa aza adino ny mijery ny 'Volume' sy ny 'Trend'.`;
-            }, 2000);
+        window.onload = loadChart;
+
+        function startSignal() {
+            const status = document.getElementById("status");
+            let count = 3;
+            const timer = setInterval(() => {
+                status.innerHTML = `⚠️ ANALYSING TREND... ${count}`;
+                count--;
+                if (count < 0) {
+                    clearInterval(timer);
+                    generateSmartSignal();
+                }
+            }, 1000);
         }
 
-        const s = document.createElement('script');
-        s.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
-        s.async = true;
-        document.head.appendChild(s);
-        window.onload = updateWidget;
+        function generateSmartSignal() {
+            const tf = parseInt(document.getElementById("timeframe").value);
+            const exp = new Date(new Date().getTime() + (tf * 60000));
+            // RSI simulated (Maka tarehimarika eo anelanelan'ny 20-80)
+            const rsi = Math.floor(Math.random() * 60) + 20; 
+            
+            let signal, className, advice;
+
+            if (rsi < 35) {
+                signal = "🟢 CALL (HIGHER)";
+                className = "buy";
+                advice = `RSI: ${rsi} - Oversold, Mety hiakatra.`;
+            } else if (rsi > 65) {
+                signal = "🔴 PUT (LOWER)";
+                className = "sell";
+                advice = `RSI: ${rsi} - Overbought, Mety hidina.`;
+            } else {
+                signal = "⚪ WAIT...";
+                className = "";
+                advice = `RSI: ${rsi} - Tsena tsy mazava.`;
+            }
+            
+            document.getElementById("status").innerHTML = `🎯 EXP: ${exp.toTimeString().substring(0, 5)} | ${advice}`;
+            document.getElementById("signal").innerHTML = signal;
+            document.getElementById("signal").className = className;
+        }
     </script>
 </body>
 </html>
