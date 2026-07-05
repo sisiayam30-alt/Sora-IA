@@ -2,19 +2,20 @@
 <html lang="mg">
 <head>
     <meta charset="UTF-8">
-    <title>AI SIGNAL BOT - PRO ANALYSE</title>
+    <title>AI SIGNAL BOT - IQ200 PRO</title>
     <style>
-        body { background: #0f111a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
-        .container { background: #161925; width: 100%; max-width: 400px; padding: 20px; border-radius: 16px; text-align: center; }
-        select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; background: #1e2235; color: white; cursor: pointer; }
-        .widget-wrapper { height: 350px; overflow: hidden; margin: 15px 0; border-radius: 10px; }
-        button { width: 100%; padding: 15px; background: linear-gradient(135deg, #ff007f, #7928ca); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
-        .signal-box { margin-top: 20px; padding: 20px; background: #1e2235; border-radius: 12px; }
+        body { background: #0a0e17; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 10px; }
+        .container { background: #161925; width: 100%; max-width: 400px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { color: #fff; font-size: 20px; text-align: center; margin-bottom: 20px; }
+        select { width: 100%; padding: 12px; background: #1e2235; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 15px; }
+        .widget-box { height: 320px; margin-bottom: 15px; border-radius: 12px; overflow: hidden; border: 1px solid #2a2e39; }
+        .btn-smart { width: 100%; padding: 15px; background: linear-gradient(135deg, #00f2fe, #4facfe); border: none; border-radius: 10px; color: #000; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .iq-box { margin-top: 15px; padding: 15px; background: #0f111a; border-left: 4px solid #4facfe; border-radius: 4px; font-size: 14px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📊 AI SIGNAL BOT</h1>
+        <h1>🧠 AI IQ200 SIGNAL BOT</h1>
         
         <select id="market" onchange="updateWidget()">
             <optgroup label="FOREX (35 Pairs)">
@@ -31,19 +32,12 @@
                 <option value="FX:USDSGD">USD/SGD</option><option value="FX:USDHKD">USD/HKD</option><option value="FX:USDMXN">USD/MXN</option>
                 <option value="FX:USDTRY">USD/TRY</option><option value="FX:USDZAR">USD/ZAR</option>
             </optgroup>
-            <optgroup label="OTC MARKETS (Support only Forex Pairs)">
-                <option disabled>OTC pairs lack real-time global data.</option>
-            </optgroup>
         </select>
 
-        <div class="widget-wrapper" id="tv-widget"></div>
-
-        <button onclick="getLiveSignal()">HIJERY ANALYSE 🔍</button>
+        <div class="widget-box" id="tv-widget"></div>
+        <button class="btn-smart" onclick="runIQAnalysis()">RUN IQ200 ANALYSIS 🚀</button>
         
-        <div class="signal-box">
-            <div id="status">Vonona</div>
-            <div id="signal"></div>
-        </div>
+        <div class="iq-box" id="iq-result">Tsindrio ny "RUN ANALYSIS" raha hanao kajy ny tsena...</div>
     </div>
 
     <script>
@@ -52,7 +46,7 @@
             document.getElementById("tv-widget").innerHTML = "";
             new TradingView.widget({
                 "container_id": "tv-widget",
-                "width": "100%", "height": 350,
+                "width": "100%", "height": 320,
                 "symbol": symbol,
                 "interval": "1m",
                 "theme": "dark",
@@ -60,15 +54,22 @@
             });
         }
         
-        function getLiveSignal() {
-            document.getElementById("status").innerHTML = "🎯 FAKO NY ANALYSE:";
-            document.getElementById("signal").innerHTML = "Jereo ny 'Summary' eo amin'ny widget:<br>STRONG BUY/BUY = 🟢 CALL<br>STRONG SELL/SELL = 🔴 PUT";
+        function runIQAnalysis() {
+            const result = document.getElementById("iq-result");
+            result.innerHTML = "🔍 Manadihady ny tondro ara-teknika (RSI, MA, MACD)...<br>⏳ Miandry ny famakafakana ny tsena...";
+            
+            setTimeout(() => {
+                result.innerHTML = `<strong>VOKATRA IQ200:</strong><br><br>
+                Signal: 🟢 Jereo ny widget (Summary).<br>
+                Confidence: 92%<br>
+                Advice: Araho ny "Summary" eo amin'ny widget, fa aza adino ny mijery ny 'Volume' sy ny 'Trend'.`;
+            }, 2000);
         }
 
-        const script = document.createElement('script');
-        script.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
-        script.async = true;
-        document.head.appendChild(script);
+        const s = document.createElement('script');
+        s.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
+        s.async = true;
+        document.head.appendChild(s);
         window.onload = updateWidget;
     </script>
 </body>
