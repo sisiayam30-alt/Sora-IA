@@ -125,24 +125,16 @@
             document.getElementById("signal").innerHTML = signal;
             document.getElementById("signal").className = className;
         }
-    </script>   <title>BASILISK AI PRO</title>
-    <style>
-        body { background: #0c0d10; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 10px; margin: 0; }
-        .bot-container { width: 100%; max-width: 400px; background: #16191c; padding: 15px; border-radius: 10px; border: 1px solid #333; }
-        .header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 15px; }
-        select { width: 100%; padding: 12px; background: #1e2226; color: white; border: none; border-radius: 5px; margin-bottom: 15px; }
-        #widget-container { height: 300px; background: #000; border-radius: 5px; overflow: hidden; }
-    </style>
-</head>
-<body>
-
-<div class="bot-container">
+    </script>
+    <div class="bot-container">
+...
+</div>
     <div class="header">
         <span>BASILISK</span>
         <span style="color:#00ff66">● LIVE</span>
     </div>
 
-    <select id="market" onchange="updateWidget()">
+    <select id="widgetMarket" onchange="updateWidget()">
         <optgroup label="FOREX">
             <option value="FX:EURUSD">EUR/USD</option>
             <option value="FX:GBPUSD">GBP/USD</option>
@@ -160,7 +152,7 @@
 
 <script>
     function updateWidget() {
-        const symbol = document.getElementById("market").value;
+        const symbol = document.getElementById("widgetMarket").value;
         const container = document.getElementById("widget-container");
         container.innerHTML = "";
         
@@ -177,7 +169,14 @@
         });
         container.appendChild(script);
     }
-    window.onload = updateWidget;
+    window.onload = function () {
+    loadChart();
+    updateWidget();
+};
+window.onload = function () {
+    loadChart();
+    updateWidget();
+};
 </script>
 
 </body>
