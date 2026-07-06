@@ -125,25 +125,60 @@
             document.getElementById("signal").innerHTML = signal;
             document.getElementById("signal").className = className;
         }
-    </script>
+    </script>   <title>BASILISK AI PRO</title>
+    <style>
+        body { background: #0c0d10; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 10px; margin: 0; }
+        .bot-container { width: 100%; max-width: 400px; background: #16191c; padding: 15px; border-radius: 10px; border: 1px solid #333; }
+        .header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 15px; }
+        select { width: 100%; padding: 12px; background: #1e2226; color: white; border: none; border-radius: 5px; margin-bottom: 15px; }
+        #widget-container { height: 300px; background: #000; border-radius: 5px; overflow: hidden; }
+    </style>
+</head>
+<body>
+
+<div class="bot-container">
+    <div class="header">
+        <span>BASILISK</span>
+        <span style="color:#00ff66">● LIVE</span>
+    </div>
+
+    <select id="market" onchange="updateWidget()">
+        <optgroup label="FOREX">
+            <option value="FX:EURUSD">EUR/USD</option>
+            <option value="FX:GBPUSD">GBP/USD</option>
+            <option value="FX:USDJPY">USD/JPY</option>
+        </optgroup>
+        <optgroup label="OTC">
+            <option value="OTC:EURUSD">EUR/USD OTC</option>
+            <option value="OTC:GBPUSD">GBP/USD OTC</option>
+            <option value="OTC:GOLD">GOLD OTC</option>
+        </optgroup>
+    </select>
+
+    <div id="widget-container"></div>
+</div>
+
+<script>
+    function updateWidget() {
+        const symbol = document.getElementById("market").value;
+        const container = document.getElementById("widget-container");
+        container.innerHTML = "";
+        
+        const script = document.createElement("script");
+        script.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
+        script.async = true;
+        script.innerHTML = JSON.stringify({
+            "interval": "1m",
+            "width": "100%",
+            "height": "300",
+            "symbol": symbol,
+            "showIntervalTabs": true,
+            "theme": "dark"
+        });
+        container.appendChild(script);
+    }
+    window.onload = updateWidget;
+</script>
+
 </body>
 </html>
-
-
-<!-- TradingView Technical Analysis Widget -->
-<div class="tradingview-widget-container">
-  <div class="tradingview-widget-container__widget"></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-  {
-  "interval": "1m",
-  "width": "100%",
-  "isTransparent": false,
-  "height": "300",
-  "symbol": "FX:EURUSD",
-  "showIntervalTabs": true,
-  "displayMode": "single",
-  "locale": "en",
-  "colorTheme": "dark"
-  }
-  </script>
-</div>
