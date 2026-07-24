@@ -486,7 +486,8 @@
                 <div class="bitrate">96 kbps <span class="dot-pink"></span></div>
             </div>
 
-            <audio id="audioStream" src="http://sapircast.caster.fm:16194/lw6pt/;" preload="none"></audio>
+            <!-- Rohy HTTPS Proxy vaovao ho an'ny Caster.fm -->
+            <audio id="audioStream" src="https://sapircast.caster.fm/stream/lw6pt/" preload="none"></audio>
         </section>
 
         <div class="grid-section">
@@ -588,7 +589,7 @@
                     audio.play().then(() => {
                         playIcon.className = "fa-solid fa-pause";
                     }).catch(err => {
-                        alert("Mila tsindriana 'Démarrer le serveur' aloha ao amin'ny Caster.fm, na mandefa feo avy amin'ny BroadcastMySelf!");
+                        alert("Gèreo aloha fa sao tsy mbola 'Online' ny Serveur ao amin'ny Caster.fm, na mbola tsy nampifandraisina ny BroadcastMySelf!");
                     });
                 } else {
                     audio.pause();
@@ -602,4 +603,4 @@
         });
     </script>
 </body>
-                    </html>
+</html>
