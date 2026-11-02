@@ -3,188 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket Option AI Signal Generator</title>
+    <title>Générateur de signaux IA Pocket Option</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN for Candlestick/Line Simulation -->
+    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-[#0b0f17] text-slate-100 min-h-screen flex justify-center p-3 sm:p-6 font-sans">
 
-    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6">
-        <!-- Header -->
-        <div class="flex items-center space-x-3 mb-6">
-            <div class="bg-blue-600 p-3 rounded-xl text-white shadow-lg shadow-blue-600/30">
-                <i class="fa-solid fa-robot text-xl"></i>
+    <div class="w-full max-w-lg space-y-4">
+        
+        <!-- HEADER BLOCK -->
+        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
+            <div class="flex items-center space-x-3 mb-3">
+                <div class="bg-blue-600 p-3 rounded-xl text-white shadow-lg shadow-blue-600/30 flex items-center justify-center">
+                    <i class="fa-solid fa-robot text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold text-white tracking-wide">BOT IA À OPTION DE POCHE</h1>
+                    <p class="text-xs text-blue-400 font-medium">Générateur de signaux Saina IA v3.0</p>
+                </div>
             </div>
-            <div>
-                <h1 class="text-lg font-bold text-blue-400">POCKET OPTION AI BOT</h1>
-                <p class="text-xs text-slate-400">Générateur de signaux Saina IA v3.0</p>
+            <div class="inline-flex items-center space-x-2 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 rounded-full">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs text-emerald-400 font-semibold">Données en direct OTC et Forex</span>
             </div>
         </div>
 
-        <!-- Market Selection -->
-        <div class="mb-4">
-            <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
-                <i class="fa-solid fa-chart-line mr-1"></i> Sélectionner une paire (OTC/Forex)
+        <!-- ASSET SELECTION BLOCK -->
+        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
+            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider flex items-center">
+                <i class="fa-solid fa-chart-line mr-2 text-blue-400"></i> Sélectionner une paire (OTC/FOREX)
             </label>
-            <select id="asset" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition">
-                <optgroup label="Forex Real">
-                    <option value="EUR/USD">EUR/USD</option>
-                    <option value="GBP/USD">GBP/USD</option>
-                    <option value="USD/JPY">USD/JPY</option>
-                </optgroup>
-                <optgroup label="Forex & Crypto OTC">
-                    <option value="EUR/USD OTC" selected>EUR/USD OTC (Option de poche)</option>
-                    <option value="GBP/USD OTC">GBP/USD OTC</option>
-                    <option value="BTC/USD OTC">BTC/USD OTC</option>
-                    <option value="ETH/USD OTC">ETH/USD OTC</option>
-                </optgroup>
-            </select>
-        </div>
-
-        <!-- Expiration Time -->
-        <div class="mb-5">
-            <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
-                <i class="fa-solid fa-clock mr-1"></i> Sélectionnez la date d'expiration
-            </label>
-            <div class="grid grid-cols-4 gap-2 text-xs font-medium">
-                <button onclick="setDuration('5s', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition active">5s</button>
-                <button onclick="setDuration('10s', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">10s</button>
-                <button onclick="setDuration('15s', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">15s</button>
-                <button onclick="setDuration('30s', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">30s</button>
-                <button onclick="setDuration('1M', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">1M</button>
-                <button onclick="setDuration('2M', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">2M</button>
-                <button onclick="setDuration('3M', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">3M</button>
-                <button onclick="setDuration('5M', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">5M</button>
+            <div class="relative">
+                <select id="assetSelect" onchange="onAssetChange()" class="w-full bg-[#0b0f17] border border-[#26334d] rounded-xl px-4 py-3 text-sm font-semibold text-white focus:outline-none focus:border-blue-500 appearance-none">
+                    <optgroup label="Forex Real">
+                        <option value="EUR/USD">EUR/USD</option>
+                        <option value="GBP/USD">GBP/USD</option>
+                        <option value="USD/JPY">USD/JPY</option>
+                        <option value="AUD/CAD">AUD/CAD</option>
+                    </optgroup>
+                    <optgroup label="Forex & Crypto OTC">
+                        <option value="EUR/USD OTC" selected>EUR/USD OTC (Option de poche)</option>
+                        <option value="GBP/USD OTC">GBP/USD OTC (Option de poche)</option>
+                        <option value="USD/JPY OTC">USD/JPY OTC (Option de poche)</option>
+                        <option value="BTC/USD OTC">BTC/USD OTC (Option de poche)</option>
+                        <option value="ETH/USD OTC">ETH/USD OTC (Option de poche)</option>
+                    </optgroup>
+                </select>
+                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
             </div>
         </div>
 
-        <!-- Chart Preview Canvas -->
-        <div class="mb-5 bg-slate-950 p-3 rounded-xl border border-slate-800">
-            <canvas id="marketChart" height="100"></canvas>
+        <!-- TIMEFRAME SELECTION BLOCK -->
+        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
+            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider flex items-center">
+                <i class="fa-solid fa-clock mr-2 text-blue-400"></i> Sélectionnez la date d'expiration
+            </label>
+            <div class="grid grid-cols-4 gap-2 text-xs font-semibold">
+                <button onclick="selectTime('5s', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">5s</button>
+                <button onclick="selectTime('10s', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">10s</button>
+                <button onclick="selectTime('15s', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">15 secondes</button>
+                <button onclick="selectTime('30s', this)" class="time-btn py-3 rounded-xl border border-blue-600 bg-blue-600 text-white shadow-lg shadow-blue-600/30">années 30</button>
+                <button onclick="selectTime('1M', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">1M</button>
+                <button onclick="selectTime('2M', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">2M</button>
+                <button onclick="selectTime('3M', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">3M</button>
+                <button onclick="selectTime('5M', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">5M</button>
+            </div>
         </div>
 
-        <!-- Start Analyse Button -->
-        <button onclick="startAnalysis()" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-green-600/30 transition transform active:scale-95 flex items-center justify-center space-x-2">
-            <i class="fa-solid fa-magnifying-glass-chart"></i>
-            <span>START ANALYSE</span>
-        </button>
-
-        <!-- Result Box -->
-        <div id="resultBox" class="mt-5 bg-slate-950 border border-slate-800 rounded-xl p-4 text-center hidden">
-            <p class="text-xs text-slate-400 uppercase tracking-widest">Signal IA Reçu</p>
-            <div id="signalText" class="text-3xl font-black my-2">--</div>
-            <div id="confidenceText" class="text-xs text-blue-400 font-semibold">Fahatokisana: --%</div>
-        </div>
-
-        <!-- Martingale Calculator -->
-        <div class="mt-5 bg-slate-950 border border-slate-800 rounded-xl p-4">
+        <!-- MARTINGALE CALCULATOR BLOCK -->
+        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
             <div class="flex justify-between items-center mb-3">
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    <i class="fa-solid fa-coins mr-1 text-amber-400"></i> Calculateur de Martingale
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-coins text-amber-400 mr-2"></i> CALCULATEUR DE MARTINGALE DYNAMIQUE
                 </span>
-                <span id="stepBadge" class="bg-blue-500/10 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-full border border-blue-500/20">Étape 0</span>
+                <span id="stepBadge" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 text-xs font-bold px-3 py-0.5 rounded-full">Étape 0</span>
             </div>
-            <div class="flex justify-between items-center mb-4">
+            <div class="bg-[#0b0f17] border border-[#1e293b] rounded-xl p-3 mb-3 flex justify-between items-center">
                 <div>
                     <p class="text-xs text-slate-400">Miser</p>
-                    <p id="stakeDisplay" class="text-2xl font-black text-amber-400">$1.00</p>
+                    <p id="stakeText" class="text-2xl font-black text-amber-400">$1,00</p>
                 </div>
                 <div class="text-right">
                     <p class="text-xs text-slate-400">Multiplicateur</p>
-                    <p class="text-sm font-bold text-slate-200">x2.0</p>
+                    <p class="text-sm font-bold text-white">x 2.0</p>
                 </div>
             </div>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="updateMartingale(true)" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-bold py-2.5 rounded-lg text-sm transition">
-                    <i class="fa-solid fa-check mr-1"></i> GAGNER
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="processMartingale(true)" class="bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-500/40 font-bold py-3 rounded-xl text-xs transition flex items-center justify-center space-x-1">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>GAGNER (Gagner)</span>
                 </button>
-                <button onclick="updateMartingale(false)" class="bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/30 font-bold py-2.5 rounded-lg text-sm transition">
-                    <i class="fa-solid fa-xmark mr-1"></i> PERTE
+                <button onclick="processMartingale(false)" class="bg-rose-950/60 hover:bg-rose-900/60 text-rose-400 border border-rose-500/40 font-bold py-3 rounded-xl text-xs transition flex items-center justify-center space-x-1">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    <span>PERTE</span>
                 </button>
             </div>
         </div>
+
+        <!-- BIG START ANALYSE BUTTON -->
+        <button onclick="runAIAnalysis()" class="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-95 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-600/20 text-base tracking-wider uppercase flex items-center justify-center space-x-2 transition transform active:scale-[0.98]">
+            <i class="fa-solid fa-bolt"></i>
+            <span>DÉMARRER L'ANALYSE</span>
+        </button>
+
+        <!-- DECISION & CONFIDENCE BLOCK -->
+        <div id="decisionBlock" class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs text-slate-400 uppercase font-semibold">DÉCISION DE L'IA</span>
+                    <span id="assetTag" class="text-sm font-black text-white">EUR/USD OTC</span>
+                    <span id="timeTag" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded font-bold">30s</span>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 block text-right">Confiance en l'IA</span>
+                    <span id="confidenceVal" class="text-base font-black text-emerald-400">92,8%</span>
+                </div>
+            </div>
+
+            <!-- SIGNAL DISPLAY BOX -->
+            <div id="signalBox" class="bg-[#0d161d] border border-emerald-500/40 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden">
+                <div id="iconCircle" class="w-10 h-10 bg-emerald-400/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-2 text-lg">
+                    <i id="signalIcon" class="fa-solid fa-arrow-up"></i>
+                </div>
+                <div id="signalTitle" class="text-2xl font-black text-emerald-400 tracking-wide">
+                    APPEL (ACHAT <span class="w-3 h-3 inline-block bg-emerald-400 rounded-full"></span>)
+                </div>
+                <p id="signalDesc" class="text-xs text-slate-400 mt-2">Sipe IA : Les prix vont augmenter dans les années 30</p>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div class="w-full bg-slate-950 rounded-full h-2 mt-4 overflow-hidden">
+                <div id="progressBar" class="bg-emerald-500 h-full w-full transition-all duration-500"></div>
+            </div>
+        </div>
+
+        <!-- INDICATORS GRID BLOCK -->
+        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center">
+                <i class="fa-solid fa-microchip mr-2 text-blue-400"></i> ANALYSE DES INDICATEURS TECHNIQUES
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-[#0b0f17] border border-[#1e293b] p-3 rounded-xl">
+                    <p class="text-xs text-slate-400">RSI (14)</p>
+                    <p id="rsiVal" class="text-lg font-bold text-white mt-0.5">26.9</p>
+                    <p id="rsiState" class="text-[10px] text-emerald-400 mt-1 font-semibold">Survente (Signal d'achat)</p>
+                </div>
+                <div class="bg-[#0b0f17] border border-[#1e293b] p-3 rounded-xl">
+                    <p class="text-xs text-slate-400">MACD</p>
+                    <p id="macdVal" class="text-lg font-bold text-white mt-0.5">+0,0014</p>
+                    <p id="macdState" class="text-[10px] text-emerald-400 mt-1 font-semibold">Croix haussière</p>
+                </div>
+                <div class="bg-[#0b0f17] border border-[#1e293b] p-3 rounded-xl">
+                    <p class="text-xs text-slate-400">ET (50)</p>
+                    <p id="smaVal" class="text-lg font-bold text-white mt-0.5">SMA 50</p>
+                    <p id="smaState" class="text-[10px] text-slate-400 mt-1">Tendance haussière (>MA50)</p>
+                </div>
+                <div class="bg-[#0b0f17] border border-[#1e293b] p-3 rounded-xl">
+                    <p class="text-xs text-slate-400">Bandes de Bollinger</p>
+                    <p id="bbVal" class="text-lg font-bold text-white mt-0.5">BB Low</p>
+                    <p id="bbState" class="text-[10px] text-slate-400 mt-1">Toucher de bande inférieure</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIMULATION CHART BLOCK -->
+        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-chart-area mr-2 text-emerald-400"></i> SIMULATION DE MARCHÉ EN DIRECT
+                </span>
+                <span id="chartPrice" class="text-xs font-mono font-bold text-emerald-400">1,08670</span>
+            </div>
+            <div class="h-44 w-full">
+                <canvas id="liveChart"></canvas>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="text-center text-[11px] text-slate-500 py-2">
+            Générateur de signaux de trading IA Pocket Option © 2026.<br>
+            Investissez de manière responsable.
+        </div>
+
     </div>
 
     <script>
-        let selectedDuration = '5s';
-        let currentStake = 1.00;
+        let selectedTimeframe = "30s";
+        let stakeAmount = 1.00;
         let martingaleStep = 0;
 
-        // Setup Chart.js preview
-        const ctx = document.getElementById('marketChart').getContext('2d');
-        const marketChart = new Chart(ctx, {
+        function selectTime(time, btn) {
+            selectedTimeframe = time;
+            document.querySelectorAll('.time-btn').forEach(b => {
+                b.className = "time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition text-white";
+            });
+            btn.className = "time-btn py-3 rounded-xl border border-blue-600 bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-bold";
+            document.getElementById('timeTag').innerText = time;
+        }
+
+        function onAssetChange() {
+            const asset = document.getElementById('assetSelect').value;
+            document.getElementById('assetTag').innerText = asset;
+        }
+
+        function processMartingale(isWin) {
+            if (isWin) {
+                stakeAmount = 1.00;
+                martingaleStep = 0;
+            } else {
+                martingaleStep++;
+                stakeAmount *= 2.0;
+            }
+            document.getElementById('stakeText').innerText = `$${stakeAmount.toFixed(2).replace('.', ',')}`;
+            document.getElementById('stepBadge').innerText = `Étape ${martingaleStep}`;
+        }
+
+        // Live Chart Initialization
+        const ctx = document.getElementById('liveChart').getContext('2d');
+        let chartData = [1.08665, 1.08660, 1.08670, 1.08655, 1.08685, 1.08675, 1.08690, 1.08712, 1.08695, 1.08670, 1.08672];
+        const liveChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                labels: chartData.map((_, i) => i),
                 datasets: [{
-                    data: [100, 102, 101, 104, 103, 106, 105, 108, 107, 110],
-                    borderColor: '#3b82f6',
+                    data: chartData,
+                    borderColor: '#f87171',
                     borderWidth: 2,
                     pointRadius: 0,
-                    tension: 0.3,
-                    fill: true,
-                    backgroundColor: 'rgba(59, 130, 246, 0.05)'
+                    tension: 0.4,
+                    fill: false
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
                     x: { display: false },
-                    y: { display: false }
+                    y: { 
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#64748b', font: { size: 10 } }
+                    }
                 }
             }
         });
 
-        function setDuration(duration, btn) {
-            selectedDuration = duration;
-            document.querySelectorAll('.duration-btn').forEach(b => {
-                b.classList.remove('border-blue-500', 'bg-blue-500/10', 'text-blue-400');
-            });
-            btn.classList.add('border-blue-500', 'bg-blue-500/10', 'text-blue-400');
-        }
+        function runAIAnalysis() {
+            const confidence = (85 + Math.random() * 12).toFixed(1).replace('.', ',');
+            const isCall = Math.random() > 0.4;
+            const asset = document.getElementById('assetSelect').value;
 
-        function startAnalysis() {
-            const resultBox = document.getElementById('resultBox');
-            const signalText = document.getElementById('signalText');
-            const confidenceText = document.getElementById('confidenceText');
+            document.getElementById('confidenceVal').innerText = `${confidence}%`;
+            document.getElementById('assetTag').innerText = asset;
+            document.getElementById('timeTag').innerText = selectedTimeframe;
 
-            resultBox.classList.remove('hidden');
-            signalText.className = 'text-3xl font-black my-2 text-amber-400';
-            signalText.innerText = 'ANALYSE...';
-            confidenceText.innerText = 'Sivan\'ny IA (RSI, MACD, BB)...';
+            const signalBox = document.getElementById('signalBox');
+            const iconCircle = document.getElementById('iconCircle');
+            const signalIcon = document.getElementById('signalIcon');
+            const signalTitle = document.getElementById('signalTitle');
+            const signalDesc = document.getElementById('signalDesc');
+            const progressBar = document.getElementById('progressBar');
 
-            setTimeout(() => {
-                const rsi = Math.random() * 100;
-                const confidence = (75 + Math.random() * 22).toFixed(2);
-                let signal = rsi < 45 ? "CALL" : "PUT";
+            if (isCall) {
+                signalBox.className = "bg-[#0d161d] border border-emerald-500/40 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden";
+                iconCircle.className = "w-10 h-10 bg-emerald-400/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-2 text-lg";
+                signalIcon.className = "fa-solid fa-arrow-up";
+                signalTitle.className = "text-2xl font-black text-emerald-400 tracking-wide";
+                signalTitle.innerHTML = `APPEL (ACHAT <span class="w-3 h-3 inline-block bg-emerald-400 rounded-full"></span>)`;
+                signalDesc.innerText = `Sipe IA : Les prix vont augmenter dans les ${selectedTimeframe}`;
+                progressBar.className = "bg-emerald-500 h-full w-full transition-all duration-500";
 
-                signalText.innerText = signal;
-                if(signal === "CALL") {
-                    signalText.className = 'text-3xl font-black my-2 text-emerald-400 animate-pulse';
-                } else {
-                    signalText.className = 'text-3xl font-black my-2 text-rose-500 animate-pulse';
-                }
-                confidenceText.innerText = `Fahatokisana: ${confidence}% | Timeframe: ${selectedDuration}`;
-            }, 800);
-        }
-
-        function updateMartingale(won) {
-            if (won) {
-                currentStake = 1.00;
-                martingaleStep = 0;
+                document.getElementById('rsiVal').innerText = (20 + Math.random() * 15).toFixed(1);
+                document.getElementById('rsiState').innerText = "Survente (Signal d'achat)";
+                document.getElementById('rsiState').className = "text-[10px] text-emerald-400 mt-1 font-semibold";
+                document.getElementById('macdState').innerText = "Croix haussière";
+                document.getElementById('macdState').className = "text-[10px] text-emerald-400 mt-1 font-semibold";
             } else {
-                martingaleStep++;
-                currentStake *= 2.0;
+                signalBox.className = "bg-[#180d11] border border-rose-500/40 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden";
+                iconCircle.className = "w-10 h-10 bg-rose-400/20 text-rose-400 rounded-full flex items-center justify-center mx-auto mb-2 text-lg";
+                signalIcon.className = "fa-solid fa-arrow-down";
+                signalTitle.className = "text-2xl font-black text-rose-400 tracking-wide";
+                signalTitle.innerHTML = `Vente (PUT <span class="w-3 h-3 inline-block bg-rose-400 rounded-full"></span>)`;
+                signalDesc.innerText = `Sipe IA : Les prix vont diminuer dans les ${selectedTimeframe}`;
+                progressBar.className = "bg-rose-500 h-full w-full transition-all duration-500";
+
+                document.getElementById('rsiVal').innerText = (68 + Math.random() * 15).toFixed(1);
+                document.getElementById('rsiState').innerText = "Surachat (Signal de vente)";
+                document.getElementById('rsiState').className = "text-[10px] text-rose-400 mt-1 font-semibold";
+                document.getElementById('macdState').innerText = "Croix baissière";
+                document.getElementById('macdState').className = "text-[10px] text-rose-400 mt-1 font-semibold";
             }
-            document.getElementById('stakeDisplay.innerText').innerText = `$${currentStake.toFixed(2)}`;
-            document.getElementById('stakeDisplay').innerText = `$${currentStake.toFixed(2)}`;
-            document.getElementById('stepBadge').innerText = `Étape ${martingaleStep}`;
+
+            // Update Chart Data Dynamically
+            const newPrice = (1.08600 + Math.random() * 0.00100).toFixed(5);
+            document.getElementById('chartPrice').innerText = newPrice.replace('.', ',');
+            liveChart.data.datasets[0].data.shift();
+            liveChart.data.datasets[0].data.push(parseFloat(newPrice));
+            liveChart.update();
         }
     </script>
 </body>
-    </html>
+                                                                                                                                                                      </html>
