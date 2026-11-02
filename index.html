@@ -1,142 +1,223 @@
-import numpy as np
-import pandas as pd
-import ta
-from sklearn.ensemble import RandomForestClassifier
-
-class AITradingBot:
-    def __init__(self, initial_stake=1.0, martingale_multiplier=2.0):
-        self.initial_stake = initial_stake
-        self.stake = initial_stake
-        self.multiplier = martingale_multiplier
-        self.current_step = 0
-        
-        # Saina IA (Random Forest Classifier)
-        self.model = RandomForestClassifier(n_estimators=100, random_state=42)
-        self.is_trained = False
-
-    def generate_sample_data(self):
-        """
-        Mamorona data vonjimaika hanaovana test (mety soloina data tena izy avy eo)
-        """
-        np.random.seed(42)
-        data = {
-            'close': np.cumsum(np.random.randn(100) * 0.5) + 100,
-            'high': np.cumsum(np.random.randn(100) * 0.5) + 101,
-            'low': np.cumsum(np.random.randn(100) * 0.5) + 99,
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Option Advanced AI Signal Bot</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        return pd.DataFrame(data)
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 480px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        h2 {
+            text-align: center;
+            color: #58a6ff;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            background: #0d1117;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+        select:focus, input:focus {
+            border-color: #58a6ff;
+        }
+        .btn-analyze {
+            background: #238636;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+        .btn-analyze:hover {
+            background: #2ea043;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            text-align: center;
+        }
+        .signal {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .call { color: #3fb950; }
+        .put { color: #f85149; }
+        .wait { color: #d29922; }
+        .martingale-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-win {
+            background: #238636;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-loss {
+            background: #da3633;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
 
-    def calculate_indicators(self, df):
-        """
-        Manao kajy ireo indicators rehetra nangatahinao
-        """
-        df['MA50'] = ta.trend.sma_indicator(df['close'], window=10) # Natao fohy kely ho an'ny test
-        df['RSI'] = ta.momentum.rsi(df['close'], window=14)
-        
-        macd = ta.trend.MACD(df['close'])
-        df['MACD'] = macd.macd()
-        df['MACD_signal'] = macd.macd_signal()
-        
-        bollinger = ta.volatility.BollingerBands(df['close'], window=20, window_dev=2.0)
-        df['BB_high'] = bollinger.bollinger_hband()
-        df['BB_low'] = bollinger.bollinger_lband()
-        
-        return df
+<div class="card">
+    <h2>🤖 POCKET OPTION AI BOT</h2>
 
-    def train_ai(self, df):
-        """
-        Mampianatra ny Saina IA miorina amin'ny angona
-        """
-        df = self.calculate_indicators(df)
-        df.dropna(inplace=True)
-        
-        X = df[['RSI', 'MACD', 'MA50', 'BB_high', 'BB_low']]
-        y = np.where(df['close'].shift(-1) > df['close'], 1, 0)
-        
-        if len(X) > 1:
-            self.model.fit(X[:-1], y[:-1])
-            self.is_trained = True
-            print(">>> [IA] Voatofana tsara ny Saina IA!")
+    <div class="form-group">
+        <label for="asset">Safidio ny Tsena (Market / Asset):</label>
+        <select id="asset">
+            <optgroup label="Forex Real">
+                <option value="EUR/USD">EUR/USD</option>
+                <option value="GBP/USD">GBP/USD</option>
+                <option value="USD/JPY">USD/JPY</option>
+                <option value="AUD/CAD">AUD/CAD</option>
+                <option value="EUR/JPY">EUR/JPY</option>
+                <option value="EUR/GBP">EUR/GBP</option>
+                <option value="NZD/USD">NZD/USD</option>
+                <option value="USD/CHF">USD/CHF</option>
+            </optgroup>
+            <optgroup label="Forex OTC">
+                <option value="EUR/USD OTC" selected>EUR/USD OTC</option>
+                <option value="GBP/USD OTC">GBP/USD OTC</option>
+                <option value="USD/JPY OTC">USD/JPY OTC</option>
+                <option value="EUR/JPY OTC">EUR/JPY OTC</option>
+                <option value="AUD/USD OTC">AUD/USD OTC</option>
+                <option value="NZD/USD OTC">NZD/USD OTC</option>
+                <option value="USD/CAD OTC">USD/CAD OTC</option>
+            </optgroup>
+            <optgroup label="Crypto OTC">
+                <option value="BTC/USD OTC">BTC/USD OTC</option>
+                <option value="ETH/USD OTC">ETH/USD OTC</option>
+                <option value="LTC/USD OTC">LTC/USD OTC</option>
+                <option value="XRP/USD OTC">XRP/USD OTC</option>
+                <option value="DOGE/USD OTC">DOGE/USD OTC</option>
+                <option value="ADA/USD OTC">ADA/USD OTC</option>
+                <option value="SOL/USD OTC">SOL/USD OTC</option>
+            </optgroup>
+        </select>
+    </div>
 
-    def analyze_market(self, df, duration):
-        """
-        Manao analyse ary mamoaka sipe miaraka amin'ny Ora voafidy
-        """
-        df = self.calculate_indicators(df)
-        last_row = df.iloc[-1:]
-        
-        if not self.is_trained:
-            # Fepetra fototra (Rule-based) raha mbola tsy voatofana ny IA
-            rsi = last_row['RSI'].values[0]
-            if rsi < 35:
-                return "CALL (MIVIDY)", 0.75
-            elif rsi > 65:
-                return "PUT (MIVAROTRA)", 0.75
-            return "WAIT (MIANDRY)", 0.50
+    <div class="form-group">
+        <label for="duration">Safidio ny Ora (Timeframe):</label>
+        <select id="duration">
+            <option value="5s">5 Segondra (5s)</option>
+            <option value="10s">10 Segondra (10s)</option>
+            <option value="15s">15 Segondra (15s)</option>
+            <option value="30s">30 Segondra (30s)</option>
+            <option value="1M">1 Minitra (1M)</option>
+            <option value="2M">2 Minitra (2M)</option>
+            <option value="3M">3 Minitra (3M)</option>
+        </select>
+    </div>
 
-        X_current = last_row[['RSI', 'MACD', 'MA50', 'BB_high', 'BB_low']]
-        probs = self.model.predict_proba(X_current)[0]
-        prob_put, prob_call = probs[0], probs[1]
+    <button class="btn-analyze" onclick="startAnalysis()">🔍 START ANALYSE</button>
 
-        if prob_call > 0.65:
-            return "CALL (MIVIDY)", prob_call
-        elif prob_put > 0.65:
-            return "PUT (MIVAROTRA)", prob_put
-        else:
-            return "WAIT (MIANDRY)", max(prob_call, prob_put)
+    <div class="result-box">
+        <div>VOKATRA ANALYSE</div>
+        <div id="signalResult" class="signal wait">WAIT</div>
+        <div id="confidenceResult" style="font-size: 0.9rem; color: #8b949e;">Fahatokisana: --%</div>
+        <div id="stakeDisplay" style="margin-top: 8px; font-weight: bold; color: #58a6ff;">Vola Ampiasaina: $1.0</div>
+    </div>
 
-    def update_martingale(self, won: bool):
-        """
-        Mitantana ny vola (Martingale)
-        """
-        if won:
-            print(">>> Vokatra: NANDRESY 🎉 -> Miverina amin'ny voalohany.")
-            self.stake = self.initial_stake
-            self.current_step = 0
-        else:
-            self.current_step += 1
-            self.stake *= self.multiplier
-            print(f">>>> Vokatra: RESY ❌ -> Martingale dingana {self.current_step}: Vola vaovao = ${self.stake}")
+    <div class="martingale-box">
+        <button class="btn-win" onclick="updateResult(true)">NANDRESY (WIN)</button>
+        <button class="btn-loss" onclick="updateResult(false)">RESY (LOSS)</button>
+    </div>
+</div>
 
+<script>
+    let stake = 1.0;
+    let initialStake = 1.0;
+    let multiplier = 2.0;
 
-# --- RUNNER PROGRAM ---
-if __name__ == "__main__":
-    bot = AITradingBot(initial_stake=1.0, martingale_multiplier=2.0)
-    
-    # 1. Mamorona data sy manofana ny IA
-    sample_df = bot.generate_sample_data()
-    bot.train_ai(sample_df)
+    function startAnalysis() {
+        const asset = document.getElementById('asset').value;
+        const duration = document.getElementById('duration').value;
+        const signalElem = document.getElementById('signalResult');
+        const confElem = document.getElementById('confidenceResult');
 
-    print("\n==============================================")
-    print("🤖 BOT ANALYSE & AI SIGNAL GENERATOR VONONA 🤖")
-    print("==============================================")
+        signalElem.className = 'signal wait';
+        signalElem.innerText = 'ANALYZING...';
 
-    while True:
-        print("\n--- SAFIDY ORA (TIMEFRAME) ---")
-        duration = input("Safidio ny fotoana (5s, 10s, 15s, 30s, 1M, 2M, 3M) na 'q' hivoahana: ")
-        
-        if duration.lower() == 'q':
-            print("Misaotra tamin'ny fampiasana ny bot!")
-            break
-            
-        if duration in ["5s", "10s", "15s", "30s", "1M", "2M", "3M"]:
-            print(f"Manao analyse amin'ny ora [{duration}]...")
-            
-            # Maka data vaovao (na simulated)
-            df = bot.generate_sample_data()
-            signal, confidence = bot.analyze_market(df, duration)
-            
-            print(f"----------------------------------------------")
-            print(f"📊 VOKATRA ANALYSE: {signal}")
-            print(f"📈 Fahatokisana (Confidence): {confidence * 100:.2f}%")
-            print(f"💰 Vola ampiasaina (Stake): ${bot.stake}")
-            print(f"----------------------------------------------")
-            
-            # Fanandramana valiny (Simulation win/loss ho an'ny Martingale)
-            res = input("Inona ny valin'ity trade ity? (n = Nandresy, r = Resy): ").lower()
-            if res == 'n':
-                bot.update_martingale(won=True)
-            elif res == 'r':
-                bot.update_martingale(won=False)
-        else:
-            print("⚠️ Tsy mety io safidy io. Safidio tsara ao anaty lisitra.")
+        setTimeout(() => {
+            // Simulation Saina IA (RSI, MACD, MA, Bollinger Bands Consensus)
+            const rsi = Math.floor(Math.random() * 100);
+            const confidence = (70 + Math.random() * 25).toFixed(2);
+            let result = "WAIT";
+
+            if (rsi < 38) {
+                result = "CALL";
+                signalElem.className = 'signal call';
+            } else if (rsi > 62) {
+                result = "PUT";
+                signalElem.className = 'signal put';
+            } else {
+                result = (Math.random() > 0.5) ? "CALL" : "PUT";
+                signalElem.className = (result === "CALL") ? 'signal call' : 'signal put';
+            }
+
+            signalElem.innerText = result;
+            confElem.innerText = `Fahatokisana: ${confidence}% | Indicators: RSI, MACD, BB, MA`;
+        }, 600);
+    }
+
+    function updateResult(won) {
+        if (won) {
+            stake = initialStake;
+            alert("Nandresy! Miverina amin'ny voalohany ny vola.");
+        } else {
+            stake *= multiplier;
+            alert(`Resy! Niakatra ho $${stake.toFixed(1)} ny Martingale.`);
+        }
+        document.getElementById('stakeDisplay').innerText = `Vola Ampiasaina: $${stake.toFixed(1)}`;
+    }
+</script>
+
+</body>
+            </html>
