@@ -3,221 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket Option Advanced AI Signal Bot</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 480px;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-        }
-        h2 {
-            text-align: center;
-            color: #58a6ff;
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-            color: #8b949e;
-        }
-        select, input, button {
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #30363d;
-            background: #0d1117;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-        }
-        select:focus, input:focus {
-            border-color: #58a6ff;
-        }
-        .btn-analyze {
-            background: #238636;
-            color: #fff;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            margin-top: 10px;
-            transition: 0.2s;
-        }
-        .btn-analyze:hover {
-            background: #2ea043;
-        }
-        .result-box {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 8px;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            text-align: center;
-        }
-        .signal {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        .call { color: #3fb950; }
-        .put { color: #f85149; }
-        .wait { color: #d29922; }
-        .martingale-box {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .btn-win {
-            background: #238636;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-loss {
-            background: #da3633;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-    </style>
+    <title>Pocket Option AI Signal Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN for Candlestick/Line Simulation -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4">
 
-<div class="card">
-    <h2>🤖 POCKET OPTION AI BOT</h2>
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6">
+        <!-- Header -->
+        <div class="flex items-center space-x-3 mb-6">
+            <div class="bg-blue-600 p-3 rounded-xl text-white shadow-lg shadow-blue-600/30">
+                <i class="fa-solid fa-robot text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold text-blue-400">POCKET OPTION AI BOT</h1>
+                <p class="text-xs text-slate-400">Générateur de signaux Saina IA v3.0</p>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label for="asset">Safidio ny Tsena (Market / Asset):</label>
-        <select id="asset">
-            <optgroup label="Forex Real">
-                <option value="EUR/USD">EUR/USD</option>
-                <option value="GBP/USD">GBP/USD</option>
-                <option value="USD/JPY">USD/JPY</option>
-                <option value="AUD/CAD">AUD/CAD</option>
-                <option value="EUR/JPY">EUR/JPY</option>
-                <option value="EUR/GBP">EUR/GBP</option>
-                <option value="NZD/USD">NZD/USD</option>
-                <option value="USD/CHF">USD/CHF</option>
-            </optgroup>
-            <optgroup label="Forex OTC">
-                <option value="EUR/USD OTC" selected>EUR/USD OTC</option>
-                <option value="GBP/USD OTC">GBP/USD OTC</option>
-                <option value="USD/JPY OTC">USD/JPY OTC</option>
-                <option value="EUR/JPY OTC">EUR/JPY OTC</option>
-                <option value="AUD/USD OTC">AUD/USD OTC</option>
-                <option value="NZD/USD OTC">NZD/USD OTC</option>
-                <option value="USD/CAD OTC">USD/CAD OTC</option>
-            </optgroup>
-            <optgroup label="Crypto OTC">
-                <option value="BTC/USD OTC">BTC/USD OTC</option>
-                <option value="ETH/USD OTC">ETH/USD OTC</option>
-                <option value="LTC/USD OTC">LTC/USD OTC</option>
-                <option value="XRP/USD OTC">XRP/USD OTC</option>
-                <option value="DOGE/USD OTC">DOGE/USD OTC</option>
-                <option value="ADA/USD OTC">ADA/USD OTC</option>
-                <option value="SOL/USD OTC">SOL/USD OTC</option>
-            </optgroup>
-        </select>
+        <!-- Market Selection -->
+        <div class="mb-4">
+            <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
+                <i class="fa-solid fa-chart-line mr-1"></i> Sélectionner une paire (OTC/Forex)
+            </label>
+            <select id="asset" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition">
+                <optgroup label="Forex Real">
+                    <option value="EUR/USD">EUR/USD</option>
+                    <option value="GBP/USD">GBP/USD</option>
+                    <option value="USD/JPY">USD/JPY</option>
+                </optgroup>
+                <optgroup label="Forex & Crypto OTC">
+                    <option value="EUR/USD OTC" selected>EUR/USD OTC (Option de poche)</option>
+                    <option value="GBP/USD OTC">GBP/USD OTC</option>
+                    <option value="BTC/USD OTC">BTC/USD OTC</option>
+                    <option value="ETH/USD OTC">ETH/USD OTC</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <!-- Expiration Time -->
+        <div class="mb-5">
+            <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
+                <i class="fa-solid fa-clock mr-1"></i> Sélectionnez la date d'expiration
+            </label>
+            <div class="grid grid-cols-4 gap-2 text-xs font-medium">
+                <button onclick="setDuration('5s', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition active">5s</button>
+                <button onclick="setDuration('10s', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">10s</button>
+                <button onclick="setDuration('15s', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">15s</button>
+                <button onclick="setDuration('30s', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">30s</button>
+                <button onclick="setDuration('1M', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">1M</button>
+                <button onclick="setDuration('2M', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">2M</button>
+                <button onclick="setDuration('3M', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">3M</button>
+                <button onclick="setDuration('5M', this)" class="duration-btn py-2.5 rounded-lg border border-slate-700 bg-slate-950 hover:border-blue-500 transition">5M</button>
+            </div>
+        </div>
+
+        <!-- Chart Preview Canvas -->
+        <div class="mb-5 bg-slate-950 p-3 rounded-xl border border-slate-800">
+            <canvas id="marketChart" height="100"></canvas>
+        </div>
+
+        <!-- Start Analyse Button -->
+        <button onclick="startAnalysis()" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-green-600/30 transition transform active:scale-95 flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-magnifying-glass-chart"></i>
+            <span>START ANALYSE</span>
+        </button>
+
+        <!-- Result Box -->
+        <div id="resultBox" class="mt-5 bg-slate-950 border border-slate-800 rounded-xl p-4 text-center hidden">
+            <p class="text-xs text-slate-400 uppercase tracking-widest">Signal IA Reçu</p>
+            <div id="signalText" class="text-3xl font-black my-2">--</div>
+            <div id="confidenceText" class="text-xs text-blue-400 font-semibold">Fahatokisana: --%</div>
+        </div>
+
+        <!-- Martingale Calculator -->
+        <div class="mt-5 bg-slate-950 border border-slate-800 rounded-xl p-4">
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    <i class="fa-solid fa-coins mr-1 text-amber-400"></i> Calculateur de Martingale
+                </span>
+                <span id="stepBadge" class="bg-blue-500/10 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-full border border-blue-500/20">Étape 0</span>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <p class="text-xs text-slate-400">Miser</p>
+                    <p id="stakeDisplay" class="text-2xl font-black text-amber-400">$1.00</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-slate-400">Multiplicateur</p>
+                    <p class="text-sm font-bold text-slate-200">x2.0</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="updateMartingale(true)" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-bold py-2.5 rounded-lg text-sm transition">
+                    <i class="fa-solid fa-check mr-1"></i> GAGNER
+                </button>
+                <button onclick="updateMartingale(false)" class="bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/30 font-bold py-2.5 rounded-lg text-sm transition">
+                    <i class="fa-solid fa-xmark mr-1"></i> PERTE
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="duration">Safidio ny Ora (Timeframe):</label>
-        <select id="duration">
-            <option value="5s">5 Segondra (5s)</option>
-            <option value="10s">10 Segondra (10s)</option>
-            <option value="15s">15 Segondra (15s)</option>
-            <option value="30s">30 Segondra (30s)</option>
-            <option value="1M">1 Minitra (1M)</option>
-            <option value="2M">2 Minitra (2M)</option>
-            <option value="3M">3 Minitra (3M)</option>
-        </select>
-    </div>
+    <script>
+        let selectedDuration = '5s';
+        let currentStake = 1.00;
+        let martingaleStep = 0;
 
-    <button class="btn-analyze" onclick="startAnalysis()">🔍 START ANALYSE</button>
-
-    <div class="result-box">
-        <div>VOKATRA ANALYSE</div>
-        <div id="signalResult" class="signal wait">WAIT</div>
-        <div id="confidenceResult" style="font-size: 0.9rem; color: #8b949e;">Fahatokisana: --%</div>
-        <div id="stakeDisplay" style="margin-top: 8px; font-weight: bold; color: #58a6ff;">Vola Ampiasaina: $1.0</div>
-    </div>
-
-    <div class="martingale-box">
-        <button class="btn-win" onclick="updateResult(true)">NANDRESY (WIN)</button>
-        <button class="btn-loss" onclick="updateResult(false)">RESY (LOSS)</button>
-    </div>
-</div>
-
-<script>
-    let stake = 1.0;
-    let initialStake = 1.0;
-    let multiplier = 2.0;
-
-    function startAnalysis() {
-        const asset = document.getElementById('asset').value;
-        const duration = document.getElementById('duration').value;
-        const signalElem = document.getElementById('signalResult');
-        const confElem = document.getElementById('confidenceResult');
-
-        signalElem.className = 'signal wait';
-        signalElem.innerText = 'ANALYZING...';
-
-        setTimeout(() => {
-            // Simulation Saina IA (RSI, MACD, MA, Bollinger Bands Consensus)
-            const rsi = Math.floor(Math.random() * 100);
-            const confidence = (70 + Math.random() * 25).toFixed(2);
-            let result = "WAIT";
-
-            if (rsi < 38) {
-                result = "CALL";
-                signalElem.className = 'signal call';
-            } else if (rsi > 62) {
-                result = "PUT";
-                signalElem.className = 'signal put';
-            } else {
-                result = (Math.random() > 0.5) ? "CALL" : "PUT";
-                signalElem.className = (result === "CALL") ? 'signal call' : 'signal put';
+        // Setup Chart.js preview
+        const ctx = document.getElementById('marketChart').getContext('2d');
+        const marketChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                datasets: [{
+                    data: [100, 102, 101, 104, 103, 106, 105, 108, 107, 110],
+                    borderColor: '#3b82f6',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.3,
+                    fill: true,
+                    backgroundColor: 'rgba(59, 130, 246, 0.05)'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: { display: false }
+                }
             }
+        });
 
-            signalElem.innerText = result;
-            confElem.innerText = `Fahatokisana: ${confidence}% | Indicators: RSI, MACD, BB, MA`;
-        }, 600);
-    }
-
-    function updateResult(won) {
-        if (won) {
-            stake = initialStake;
-            alert("Nandresy! Miverina amin'ny voalohany ny vola.");
-        } else {
-            stake *= multiplier;
-            alert(`Resy! Niakatra ho $${stake.toFixed(1)} ny Martingale.`);
+        function setDuration(duration, btn) {
+            selectedDuration = duration;
+            document.querySelectorAll('.duration-btn').forEach(b => {
+                b.classList.remove('border-blue-500', 'bg-blue-500/10', 'text-blue-400');
+            });
+            btn.classList.add('border-blue-500', 'bg-blue-500/10', 'text-blue-400');
         }
-        document.getElementById('stakeDisplay').innerText = `Vola Ampiasaina: $${stake.toFixed(1)}`;
-    }
-</script>
 
+        function startAnalysis() {
+            const resultBox = document.getElementById('resultBox');
+            const signalText = document.getElementById('signalText');
+            const confidenceText = document.getElementById('confidenceText');
+
+            resultBox.classList.remove('hidden');
+            signalText.className = 'text-3xl font-black my-2 text-amber-400';
+            signalText.innerText = 'ANALYSE...';
+            confidenceText.innerText = 'Sivan\'ny IA (RSI, MACD, BB)...';
+
+            setTimeout(() => {
+                const rsi = Math.random() * 100;
+                const confidence = (75 + Math.random() * 22).toFixed(2);
+                let signal = rsi < 45 ? "CALL" : "PUT";
+
+                signalText.innerText = signal;
+                if(signal === "CALL") {
+                    signalText.className = 'text-3xl font-black my-2 text-emerald-400 animate-pulse';
+                } else {
+                    signalText.className = 'text-3xl font-black my-2 text-rose-500 animate-pulse';
+                }
+                confidenceText.innerText = `Fahatokisana: ${confidence}% | Timeframe: ${selectedDuration}`;
+            }, 800);
+        }
+
+        function updateMartingale(won) {
+            if (won) {
+                currentStake = 1.00;
+                martingaleStep = 0;
+            } else {
+                martingaleStep++;
+                currentStake *= 2.0;
+            }
+            document.getElementById('stakeDisplay.innerText').innerText = `$${currentStake.toFixed(2)}`;
+            document.getElementById('stakeDisplay').innerText = `$${currentStake.toFixed(2)}`;
+            document.getElementById('stepBadge').innerText = `Étape ${martingaleStep}`;
+        }
+    </script>
 </body>
-            </html>
+    </html>
