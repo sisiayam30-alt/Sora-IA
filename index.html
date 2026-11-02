@@ -1,241 +1,346 @@
 <!DOCTYPE html>
-<html lang="mg">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur de signaux IA Pocket Option</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN -->
+    <title>Pocket Option AI Signal Pro Engine</title>
+    <!-- Chart.js sy FontAwesome via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0b0e14;
+            --card-bg: #151a24;
+            --accent-green: #00e676;
+            --accent-red: #ff1744;
+            --accent-blue: #29b6f6;
+            --text-main: #ffffff;
+            --text-sub: #90a4ae;
+            --border-color: #232a3b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 340px;
+            gap: 20px;
+        }
+
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-weight: bold;
+            outline: none;
+        }
+
+        .time-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .btn-time {
+            padding: 8px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-time.active, .btn-time:hover {
+            background: var(--accent-blue);
+            color: #000;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-analyse {
+            background: linear-gradient(45deg, #0288d1, #29b6f6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);
+        }
+
+        .btn-analyse:hover {
+            opacity: 0.9;
+        }
+
+        /* Signal Display Card */
+        .signal-box {
+            text-align: center;
+            padding: 25px;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border-color);
+        }
+
+        .signal-title {
+            font-size: 36px;
+            font-weight: 900;
+            margin: 10px 0;
+        }
+
+        .signal-call { color: var(--accent-green); border-color: var(--accent-green); }
+        .signal-put { color: var(--accent-red); border-color: var(--accent-red); }
+        .signal-wait { color: var(--text-sub); border-color: var(--border-color); }
+
+        .confidence-meter {
+            height: 10px;
+            background: var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-blue);
+            transition: width 0.5s ease;
+        }
+
+        /* Indicator Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background: var(--bg-dark);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .stat-item span {
+            display: block;
+            color: var(--text-sub);
+        }
+
+        .stat-item strong {
+            font-size: 14px;
+        }
+
+        /* Martingale Section */
+        .martingale-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-win { background: var(--accent-green); color: #000; }
+        .btn-loss { background: var(--accent-red); color: #fff; }
+    </style>
 </head>
-<body class="bg-[#0b0f17] text-slate-100 min-h-screen flex justify-center p-3 sm:p-6 font-sans">
+<body>
 
-    <div class="w-full max-w-lg space-y-4">
-        
-        <!-- HEADER BLOCK -->
-        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
-            <div class="flex items-center space-x-3 mb-3">
-                <div class="bg-blue-600 p-3 rounded-xl text-white shadow-lg shadow-blue-600/30 flex items-center justify-center">
-                    <i class="fa-solid fa-robot text-2xl"></i>
-                </div>
-                <div>
-                    <h1 class="text-base font-bold text-white tracking-wide">BOT IA À OPTION DE POCHE</h1>
-                    <p class="text-xs text-blue-400 font-medium">Générateur de signaux Saina IA v3.0</p>
-                </div>
-            </div>
-            <div class="inline-flex items-center space-x-2 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 rounded-full">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-xs text-emerald-400 font-semibold">Données en direct OTC et Forex</span>
-            </div>
+    <div class="header">
+        <h1><i class="fa-solid fa-brain-circuit"></i> POCKET OPTION AI ENGINE PRO</h1>
+        <div style="font-size: 14px; color: var(--text-sub);">
+            <i class="fa-solid fa-circle" style="color: var(--accent-green); font-size: 10px;"></i> Signal Confluence Mode (>80%)
         </div>
+    </div>
 
-        <!-- ASSET SELECTION BLOCK -->
-        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
-            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider flex items-center">
-                <i class="fa-solid fa-chart-line mr-2 text-blue-400"></i> Sélectionner une paire (OTC/FOREX)
-            </label>
-            <div class="relative">
-                <select id="assetSelect" onchange="onAssetChange()" class="w-full bg-[#0b0f17] border border-[#26334d] rounded-xl px-4 py-3 text-sm font-semibold text-white focus:outline-none focus:border-blue-500 appearance-none">
-                    <optgroup label="Forex Real">
-                        <option value="EUR/USD">EUR/USD</option>
-                        <option value="GBP/USD">GBP/USD</option>
-                        <option value="USD/JPY">USD/JPY</option>
-                        <option value="AUD/CAD">AUD/CAD</option>
+    <div class="grid-container">
+        
+        <!-- PANEL LEFT: CONFIGURATION -->
+        <div class="card">
+            <h2><i class="fa-solid fa-sliders"></i> Configurations</h2>
+            
+            <div class="form-group">
+                <label>Marchés (Pocket Option)</label>
+                <select id="marketSelect">
+                    <optgroup label="Forex OTC">
+                        <option value="EUR/USD (OTC)">EUR/USD (OTC)</option>
+                        <option value="GBP/USD (OTC)">GBP/USD (OTC)</option>
+                        <option value="USD/JPY (OTC)">USD/JPY (OTC)</option>
+                        <option value="AUD/USD (OTC)">AUD/USD (OTC)</option>
+                        <option value="USD/CAD (OTC)">USD/CAD (OTC)</option>
+                        <option value="EUR/GBP (OTC)">EUR/GBP (OTC)</option>
                     </optgroup>
-                    <optgroup label="Forex & Crypto OTC">
-                        <option value="EUR/USD OTC" selected>EUR/USD OTC (Option de poche)</option>
-                        <option value="GBP/USD OTC">GBP/USD OTC (Option de poche)</option>
-                        <option value="USD/JPY OTC">USD/JPY OTC (Option de poche)</option>
-                        <option value="BTC/USD OTC">BTC/USD OTC (Option de poche)</option>
-                        <option value="ETH/USD OTC">ETH/USD OTC (Option de poche)</option>
+                    <optgroup label="Crypto OTC & Real">
+                        <option value="BTC/USD (OTC)">Bitcoin (OTC)</option>
+                        <option value="ETH/USD (OTC)">Ethereum (OTC)</option>
+                        <option value="SOL/USD">Solana Real</option>
+                    </optgroup>
+                    <optgroup label="Commodities & Indices">
+                        <option value="GOLD (OTC)">Gold (OTC)</option>
+                        <option value="SILVER (OTC)">Silver (OTC)</option>
+                        <option value="US100 (OTC)">US100 (OTC)</option>
                     </optgroup>
                 </select>
-                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+            </div>
+
+            <div class="form-group">
+                <label>Expiration Time (Timeframe)</label>
+                <div class="time-selector">
+                    <button class="btn-time" onclick="selectTime(this, '5s')">5s</button>
+                    <button class="btn-time" onclick="selectTime(this, '10s')">10s</button>
+                    <button class="btn-time" onclick="selectTime(this, '15s')">15s</button>
+                    <button class="btn-time active" onclick="selectTime(this, '30s')">30s</button>
+                    <button class="btn-time" onclick="selectTime(this, '1M')">1M</button>
+                    <button class="btn-time" onclick="selectTime(this, '2M')">2M</button>
+                    <button class="btn-time" onclick="selectTime(this, '3M')">3M</button>
+                    <button class="btn-time" onclick="selectTime(this, '5M')">5M</button>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label>IA Threshold (Seuil de Confiance)</label>
+                <input type="text" value="80% (Strict Confluence)" disabled>
+            </div>
+
+            <button class="btn-action btn-analyse" onclick="runAIAnalysis()">
+                <i class="fa-solid fa-microchip"></i> DÉMARRER L'ANALYSE IA
+            </button>
+        </div>
+
+        <!-- PANEL CENTER: LIVE CHART & ANALYSIS -->
+        <div class="card">
+            <h2><i class="fa-solid fa-chart-line"></i> Market Live Simulation</h2>
+            <div style="height: 320px; width: 100%;">
+                <canvas id="marketChart"></canvas>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item"><span>RSI (14)</span><strong id="valRsi">--</strong></div>
+                <div class="stat-item"><span>MACD Signal</span><strong id="valMacd">--</strong></div>
+                <div class="stat-item"><span>Moving Average (SMA50)</span><strong id="valSma">--</strong></div>
+                <div class="stat-item"><span>Bollinger Position</span><strong id="valBb">--</strong></div>
             </div>
         </div>
 
-        <!-- TIMEFRAME SELECTION BLOCK -->
-        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
-            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider flex items-center">
-                <i class="fa-solid fa-clock mr-2 text-blue-400"></i> Sélectionnez la date d'expiration
-            </label>
-            <div class="grid grid-cols-4 gap-2 text-xs font-semibold">
-                <button onclick="selectTime('5s', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">5s</button>
-                <button onclick="selectTime('10s', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">10s</button>
-                <button onclick="selectTime('15s', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">15 secondes</button>
-                <button onclick="selectTime('30s', this)" class="time-btn py-3 rounded-xl border border-blue-600 bg-blue-600 text-white shadow-lg shadow-blue-600/30">années 30</button>
-                <button onclick="selectTime('1M', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">1M</button>
-                <button onclick="selectTime('2M', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">2M</button>
-                <button onclick="selectTime('3M', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">3M</button>
-                <button onclick="selectTime('5M', this)" class="time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition">5M</button>
-            </div>
-        </div>
-
-        <!-- MARTINGALE CALCULATOR BLOCK -->
-        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
-            <div class="flex justify-between items-center mb-3">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
-                    <i class="fa-solid fa-coins text-amber-400 mr-2"></i> CALCULATEUR DE MARTINGALE DYNAMIQUE
-                </span>
-                <span id="stepBadge" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 text-xs font-bold px-3 py-0.5 rounded-full">Étape 0</span>
-            </div>
-            <div class="bg-[#0b0f17] border border-[#1e293b] rounded-xl p-3 mb-3 flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-slate-400">Miser</p>
-                    <p id="stakeText" class="text-2xl font-black text-amber-400">$1,00</p>
-                </div>
-                <div class="text-right">
-                    <p class="text-xs text-slate-400">Multiplicateur</p>
-                    <p class="text-sm font-bold text-white">x 2.0</p>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="processMartingale(true)" class="bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-500/40 font-bold py-3 rounded-xl text-xs transition flex items-center justify-center space-x-1">
-                    <i class="fa-solid fa-circle-check"></i>
-                    <span>GAGNER (Gagner)</span>
-                </button>
-                <button onclick="processMartingale(false)" class="bg-rose-950/60 hover:bg-rose-900/60 text-rose-400 border border-rose-500/40 font-bold py-3 rounded-xl text-xs transition flex items-center justify-center space-x-1">
-                    <i class="fa-solid fa-circle-xmark"></i>
-                    <span>PERTE</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- BIG START ANALYSE BUTTON -->
-        <button onclick="runAIAnalysis()" class="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-95 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-600/20 text-base tracking-wider uppercase flex items-center justify-center space-x-2 transition transform active:scale-[0.98]">
-            <i class="fa-solid fa-bolt"></i>
-            <span>DÉMARRER L'ANALYSE</span>
-        </button>
-
-        <!-- DECISION & CONFIDENCE BLOCK -->
-        <div id="decisionBlock" class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
-            <div class="flex justify-between items-center mb-3">
-                <div class="flex items-center space-x-2">
-                    <span class="text-xs text-slate-400 uppercase font-semibold">DÉCISION DE L'IA</span>
-                    <span id="assetTag" class="text-sm font-black text-white">EUR/USD OTC</span>
-                    <span id="timeTag" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded font-bold">30s</span>
-                </div>
-                <div>
-                    <span class="text-xs text-slate-400 block text-right">Confiance en l'IA</span>
-                    <span id="confidenceVal" class="text-base font-black text-emerald-400">92,8%</span>
+        <!-- PANEL RIGHT: AI SIGNAL & MARTINGALE -->
+        <div class="card">
+            <h2><i class="fa-solid fa-robot"></i> AI Signal Output</h2>
+            
+            <div class="signal-box signal-wait" id="signalBox">
+                <div style="font-size: 12px; color: var(--text-sub);">SIGNAL DÉTECTÉ</div>
+                <div class="signal-title" id="signalText">WAIT</div>
+                <div style="font-size: 13px;" id="confidenceText">Confiance: 0%</div>
+                <div class="confidence-meter">
+                    <div class="confidence-fill" id="confidenceFill"></div>
                 </div>
             </div>
 
-            <!-- SIGNAL DISPLAY BOX -->
-            <div id="signalBox" class="bg-[#0d161d] border border-emerald-500/40 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden">
-                <div id="iconCircle" class="w-10 h-10 bg-emerald-400/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-2 text-lg">
-                    <i id="signalIcon" class="fa-solid fa-arrow-up"></i>
-                </div>
-                <div id="signalTitle" class="text-2xl font-black text-emerald-400 tracking-wide">
-                    APPEL (ACHAT <span class="w-3 h-3 inline-block bg-emerald-400 rounded-full"></span>)
-                </div>
-                <p id="signalDesc" class="text-xs text-slate-400 mt-2">Sipe IA : Les prix vont augmenter dans les années 30</p>
+            <h2><i class="fa-solid fa-calculator"></i> Smart Martingale Manager</h2>
+            <div class="form-group">
+                <label>Mise Initiale ($)</label>
+                <input type="number" id="initialStake" value="1.00" onchange="resetStake()">
+            </div>
+            <div class="form-group">
+                <label>Mise Actuelle (Trade Suivant)</label>
+                <input type="text" id="currentStake" value="$1.00" readonly style="color: var(--accent-green); font-size: 18px;">
             </div>
 
-            <!-- PROGRESS BAR -->
-            <div class="w-full bg-slate-950 rounded-full h-2 mt-4 overflow-hidden">
-                <div id="progressBar" class="bg-emerald-500 h-full w-full transition-all duration-500"></div>
+            <div class="martingale-controls">
+                <button class="btn-action btn-win" onclick="handleTradeResult(true)"><i class="fa-solid fa-trophy"></i> GAGNER</button>
+                <button class="btn-action btn-loss" onclick="handleTradeResult(false)"><i class="fa-solid fa-xmark"></i> PERDRE</button>
             </div>
-        </div>
-
-        <!-- INDICATORS GRID BLOCK -->
-        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
-            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center">
-                <i class="fa-solid fa-microchip mr-2 text-blue-400"></i> ANALYSE DES INDICATEURS TECHNIQUES
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div class="bg-[#0b0f17] border border-[#1e293b] p-3 rounded-xl">
-                    <p class="text-xs text-slate-400">RSI (14)</p>
-                    <p id="rsiVal" class="text-lg font-bold text-white mt-0.5">26.9</p>
-                    <p id="rsiState" class="text-[10px] text-emerald-400 mt-1 font-semibold">Survente (Signal d'achat)</p>
-                </div>
-                <div class="bg-[#0b0f17] border border-[#1e293b] p-3 rounded-xl">
-                    <p class="text-xs text-slate-400">MACD</p>
-                    <p id="macdVal" class="text-lg font-bold text-white mt-0.5">+0,0014</p>
-                    <p id="macdState" class="text-[10px] text-emerald-400 mt-1 font-semibold">Croix haussière</p>
-                </div>
-                <div class="bg-[#0b0f17] border border-[#1e293b] p-3 rounded-xl">
-                    <p class="text-xs text-slate-400">ET (50)</p>
-                    <p id="smaVal" class="text-lg font-bold text-white mt-0.5">SMA 50</p>
-                    <p id="smaState" class="text-[10px] text-slate-400 mt-1">Tendance haussière (>MA50)</p>
-                </div>
-                <div class="bg-[#0b0f17] border border-[#1e293b] p-3 rounded-xl">
-                    <p class="text-xs text-slate-400">Bandes de Bollinger</p>
-                    <p id="bbVal" class="text-lg font-bold text-white mt-0.5">BB Low</p>
-                    <p id="bbState" class="text-[10px] text-slate-400 mt-1">Toucher de bande inférieure</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- SIMULATION CHART BLOCK -->
-        <div class="bg-[#121824] border border-[#1e293b] rounded-2xl p-4 shadow-xl">
-            <div class="flex justify-between items-center mb-3">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
-                    <i class="fa-solid fa-chart-area mr-2 text-emerald-400"></i> SIMULATION DE MARCHÉ EN DIRECT
-                </span>
-                <span id="chartPrice" class="text-xs font-mono font-bold text-emerald-400">1,08670</span>
-            </div>
-            <div class="h-44 w-full">
-                <canvas id="liveChart"></canvas>
-            </div>
-        </div>
-
-        <!-- FOOTER -->
-        <div class="text-center text-[11px] text-slate-500 py-2">
-            Générateur de signaux de trading IA Pocket Option © 2026.<br>
-            Investissez de manière responsable.
         </div>
 
     </div>
 
     <script>
+        // --- DATA & STATE MANAGEMENT ---
         let selectedTimeframe = "30s";
-        let stakeAmount = 1.00;
-        let martingaleStep = 0;
+        let currentStakeVal = 1.00;
+        let chartInstance = null;
 
-        function selectTime(time, btn) {
-            selectedTimeframe = time;
-            document.querySelectorAll('.time-btn').forEach(b => {
-                b.className = "time-btn py-3 rounded-xl border border-[#26334d] bg-[#0b0f17] hover:border-blue-500 transition text-white";
-            });
-            btn.className = "time-btn py-3 rounded-xl border border-blue-600 bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-bold";
-            document.getElementById('timeTag').innerText = time;
-        }
-
-        function onAssetChange() {
-            const asset = document.getElementById('assetSelect').value;
-            document.getElementById('assetTag').innerText = asset;
-        }
-
-        function processMartingale(isWin) {
-            if (isWin) {
-                stakeAmount = 1.00;
-                martingaleStep = 0;
-            } else {
-                martingaleStep++;
-                stakeAmount *= 2.0;
-            }
-            document.getElementById('stakeText').innerText = `$${stakeAmount.toFixed(2).replace('.', ',')}`;
-            document.getElementById('stepBadge').innerText = `Étape ${martingaleStep}`;
-        }
-
-        // Live Chart Initialization
-        const ctx = document.getElementById('liveChart').getContext('2d');
-        let chartData = [1.08665, 1.08660, 1.08670, 1.08655, 1.08685, 1.08675, 1.08690, 1.08712, 1.08695, 1.08670, 1.08672];
-        const liveChart = new Chart(ctx, {
+        // --- CHART JS SETUP ---
+        const ctx = document.getElementById('marketChart').getContext('2d');
+        chartInstance = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: chartData.map((_, i) => i),
+                labels: Array.from({length: 20}, (_, i) => i + 1),
                 datasets: [{
-                    data: chartData,
-                    borderColor: '#f87171',
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    tension: 0.4,
-                    fill: false
+                    label: 'Prix du marché',
+                    data: Array.from({length: 20}, () => 100 + Math.random() * 5),
+                    borderColor: '#29b6f6',
+                    backgroundColor: 'rgba(41, 182, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4
                 }]
             },
             options: {
@@ -244,67 +349,92 @@
                 plugins: { legend: { display: false } },
                 scales: {
                     x: { display: false },
-                    y: { 
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { color: '#64748b', font: { size: 10 } }
-                    }
+                    y: { grid: { color: '#232a3b' }, ticks: { color: '#90a4ae' } }
                 }
             }
         });
 
+        // --- TIMEFRAME SELECTOR ---
+        function selectTime(btn, time) {
+            document.querySelectorAll('.btn-time').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedTimeframe = time;
+        }
+
+        // --- AI MACHINE LEARNING ENGINE SIMULATION ---
         function runAIAnalysis() {
-            const confidence = (85 + Math.random() * 12).toFixed(1).replace('.', ',');
-            const isCall = Math.random() > 0.4;
-            const asset = document.getElementById('assetSelect').value;
-
-            document.getElementById('confidenceVal').innerText = `${confidence}%`;
-            document.getElementById('assetTag').innerText = asset;
-            document.getElementById('timeTag').innerText = selectedTimeframe;
-
             const signalBox = document.getElementById('signalBox');
-            const iconCircle = document.getElementById('iconCircle');
-            const signalIcon = document.getElementById('signalIcon');
-            const signalTitle = document.getElementById('signalTitle');
-            const signalDesc = document.getElementById('signalDesc');
-            const progressBar = document.getElementById('progressBar');
+            const signalText = document.getElementById('signalText');
+            const confidenceText = document.getElementById('confidenceText');
+            const confidenceFill = document.getElementById('confidenceFill');
 
-            if (isCall) {
-                signalBox.className = "bg-[#0d161d] border border-emerald-500/40 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden";
-                iconCircle.className = "w-10 h-10 bg-emerald-400/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-2 text-lg";
-                signalIcon.className = "fa-solid fa-arrow-up";
-                signalTitle.className = "text-2xl font-black text-emerald-400 tracking-wide";
-                signalTitle.innerHTML = `APPEL (ACHAT <span class="w-3 h-3 inline-block bg-emerald-400 rounded-full"></span>)`;
-                signalDesc.innerText = `Sipe IA : Les prix vont augmenter dans les ${selectedTimeframe}`;
-                progressBar.className = "bg-emerald-500 h-full w-full transition-all duration-500";
+            signalText.innerText = "ANALYSE...";
+            signalBox.className = "signal-box signal-wait";
 
-                document.getElementById('rsiVal').innerText = (20 + Math.random() * 15).toFixed(1);
-                document.getElementById('rsiState').innerText = "Survente (Signal d'achat)";
-                document.getElementById('rsiState').className = "text-[10px] text-emerald-400 mt-1 font-semibold";
-                document.getElementById('macdState').innerText = "Croix haussière";
-                document.getElementById('macdState').className = "text-[10px] text-emerald-400 mt-1 font-semibold";
+            setTimeout(() => {
+                // Generate Synthetic Indicators for Analysis
+                const rsi = (Math.random() * 60 + 20).toFixed(2); // 20 to 80
+                const macd = (Math.random() * 2 - 1).toFixed(3);
+                const sma = (100 + Math.random() * 2).toFixed(2);
+                const bbPos = Math.random() > 0.5 ? "Bande Supérieure" : "Bande Inférieure";
+
+                document.getElementById('valRsi').innerText = rsi;
+                document.getElementById('valMacd').innerText = macd;
+                document.getElementById('valSma').innerText = sma;
+                document.getElementById('valBb').innerText = bbPos;
+
+                // Decision Logic (XGBoost / Confluence Simulation)
+                let confidence = Math.floor(Math.random() * 30) + 70; // 70% to 99%
+                let signal = "WAIT";
+
+                if (rsi < 32 && macd > 0 && bbPos === "Bande Inférieure" && confidence >= 80) {
+                    signal = "CALL";
+                } else if (rsi > 68 && macd < 0 && bbPos === "Bande Supérieure" && confidence >= 80) {
+                    signal = "PUT";
+                } else if (confidence >= 82) {
+                    signal = Math.random() > 0.5 ? "CALL" : "PUT";
+                }
+
+                // Render Results
+                if (signal === "CALL") {
+                    signalBox.className = "signal-box signal-call";
+                    signalText.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> CALL`;
+                } else if (signal === "PUT") {
+                    signalBox.className = "signal-box signal-put";
+                    signalText.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> PUT`;
+                } else {
+                    signalBox.className = "signal-box signal-wait";
+                    signalText.innerText = "WAIT";
+                    confidence = Math.floor(Math.random() * 15) + 60; // Lower confidence display
+                }
+
+                confidenceText.innerText = `Confiance IA: ${confidence}%`;
+                confidenceFill.style.width = `${confidence}%`;
+
+                // Update Chart Visuals
+                chartInstance.data.datasets[0].data.shift();
+                chartInstance.data.datasets[0].data.push(100 + Math.random() * 5);
+                chartInstance.update();
+
+            }, 800);
+        }
+
+        // --- SMART MARTINGALE LOGIC ---
+        function handleTradeResult(won) {
+            const initial = parseFloat(document.getElementById('initialStake').value) || 1.00;
+            if (won) {
+                currentStakeVal = initial;
             } else {
-                signalBox.className = "bg-[#180d11] border border-rose-500/40 rounded-2xl p-5 text-center shadow-inner relative overflow-hidden";
-                iconCircle.className = "w-10 h-10 bg-rose-400/20 text-rose-400 rounded-full flex items-center justify-center mx-auto mb-2 text-lg";
-                signalIcon.className = "fa-solid fa-arrow-down";
-                signalTitle.className = "text-2xl font-black text-rose-400 tracking-wide";
-                signalTitle.innerHTML = `Vente (PUT <span class="w-3 h-3 inline-block bg-rose-400 rounded-full"></span>)`;
-                signalDesc.innerText = `Sipe IA : Les prix vont diminuer dans les ${selectedTimeframe}`;
-                progressBar.className = "bg-rose-500 h-full w-full transition-all duration-500";
-
-                document.getElementById('rsiVal').innerText = (68 + Math.random() * 15).toFixed(1);
-                document.getElementById('rsiState').innerText = "Surachat (Signal de vente)";
-                document.getElementById('rsiState').className = "text-[10px] text-rose-400 mt-1 font-semibold";
-                document.getElementById('macdState').innerText = "Croix baissière";
-                document.getElementById('macdState').className = "text-[10px] text-rose-400 mt-1 font-semibold";
+                currentStakeVal *= 2.0; // Multiplicateur Martingale
             }
+            document.getElementById('currentStake').value = `$${currentStakeVal.toFixed(2)}`;
+        }
 
-            // Update Chart Data Dynamically
-            const newPrice = (1.08600 + Math.random() * 0.00100).toFixed(5);
-            document.getElementById('chartPrice').innerText = newPrice.replace('.', ',');
-            liveChart.data.datasets[0].data.shift();
-            liveChart.data.datasets[0].data.push(parseFloat(newPrice));
-            liveChart.update();
+        function resetStake() {
+            const initial = parseFloat(document.getElementById('initialStake').value) || 1.00;
+            currentStakeVal = initial;
+            document.getElementById('currentStake').value = `$${currentStakeVal.toFixed(2)}`;
         }
     </script>
 </body>
-                                                                                                                                                                      </html>
+</html>
